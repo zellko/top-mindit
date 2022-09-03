@@ -1,0 +1,30 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  :root{
+    --color-card-header: #272729;
+    --color-card-bg: #1a1a1b;
+    --color-card-bg-clear: #272729;
+    --color-bg: #030303 ;
+    --color-grey: #D7DADC;
+    --color-pink: #DD7C7E;
+    --color-green: #46d160;
+    --color-red: #ea0027;
+    --color-blue: #4FBCFF;;
+  }
+  
+  @font-face {
+    font-family: "Montserrat";
+    src: local("Montserrat"),
+    url("./fonts/Montserrat/Montserrat-VariableFont_wght.ttf") format("truetype");
+  }
+  
+  body {
+    font-family: Montserrat, ubuntu, Verdana, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
