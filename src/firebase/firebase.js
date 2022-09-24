@@ -137,7 +137,38 @@ const updateDb = (() => {
     return 'Error: Comment not found';
   };
 
-  return { updatePost, updateComment };
+  const updateFollow = async (uuid, follow, type) => {
+    // Fetch data from DB
+    const dbData = await readDb(type, uuid);
+    const dbDataKey = Object.keys(dbData);
+    const updates = {};
+    const key = follow[0];
+
+    if (dbData === 'No data available') {
+      updates[`/${type}/${uuid}/`] = { [key]: follow[1] };
+
+      return update(ref(db), updates);
+    }
+
+    const isFollowInDb = dbDataKey.includes(follow[0]);
+
+    if (isFollowInDb) {
+      // If db include the follow UUID, remove it from DB.
+      updates[`/${type}/${uuid}/`] = dbData;
+      delete dbData[key];
+
+      return update(ref(db), updates);
+    }
+
+    // Else, add it to DB
+    dbData[key] = follow[1];
+    updates[`/${type}/${uuid}/`] = dbData;
+    return update(ref(db), updates);
+  };
+
+  return {
+    updatePost, updateComment, updateFollow,
+  };
 })();
 
 // /** ********************
