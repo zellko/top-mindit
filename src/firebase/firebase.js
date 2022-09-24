@@ -2,11 +2,15 @@ import { initializeApp } from 'firebase/app';
 import {
   getDatabase, ref, update, get,
 } from 'firebase/database';
+import { getAuth, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import firebaseConfig from './firebaseConfig';
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getDatabase();
+
+// Initialize provider for Google authentication
+const provider = new GoogleAuthProvider();
 
 // /** ********************
 // Firebase Realtime Database
@@ -175,6 +179,43 @@ const updateDb = (() => {
 // Firebase Authentication
 // ********************** */
 
+const auth = getAuth();
+
+function signIn() {
+  return new Promise((resolve, reject) => {
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        // This gives you a Google Access Token. You can use it to access the Google API.
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        const token = credential.accessToken;
+        // The signed-in user info.
+        const { user } = result;
+        resolve(user); // fulfilled
+      }).catch((error) => {
+        // Handle Errors here.
+        const errorCode = error.code;
+        const errorMessage = error.message;
+
+        console.log(`Sign-in error: ${errorCode}-${errorMessage}`);
+        reject('Sign-in error'); // rejected
+      });
+  });
+}
+
+function signOut() {
+  return new Promise((resolve, reject) => {
+    signOut(auth).then(() => {
+      // Sign-out successful.
+      resolve(true); // fulfilled
+    }).catch((error) => {
+      // An error happened.
+      console.log(error);
+      console.log(`Sign-out error: ${error}`);
+      reject('Sign-out error'); // rejected
+    });
+  });
+}
+
 export {
-  readDb, writeDb, updateDb,
+  readDb, writeDb, updateDb, signIn, signOut,
 };
