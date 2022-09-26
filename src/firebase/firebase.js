@@ -2,7 +2,9 @@ import { initializeApp } from 'firebase/app';
 import {
   getDatabase, ref, update, get,
 } from 'firebase/database';
-import { getAuth, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+import {
+  getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged,
+} from 'firebase/auth';
 import firebaseConfig from './firebaseConfig';
 
 // Initialize Firebase
@@ -202,7 +204,7 @@ function signIn() {
   });
 }
 
-function signOut() {
+function signOutUser() {
   return new Promise((resolve, reject) => {
     signOut(auth).then(() => {
       // Sign-out successful.
@@ -216,6 +218,21 @@ function signOut() {
   });
 }
 
+function isUserLoggedIn() {
+  return new Promise((resolve, reject) => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // User is signed in, see docs for a list of available properties
+        // https://firebase.google.com/docs/reference/js/firebase.User
+        const { uid } = user;
+        resolve(user); // fulfilled
+      }
+      // User is signed out
+      resolve(false); // fulfilled
+    });
+  });
+}
+
 export {
-  readDb, writeDb, updateDb, signIn, signOut,
+  readDb, writeDb, updateDb, signIn, signOutUser, isUserLoggedIn,
 };
