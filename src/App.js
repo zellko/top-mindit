@@ -1,5 +1,9 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import React, {
+  useState, useEffect, useCallback,
+} from 'react';
+import {
+  Routes, Route, useNavigate, useLocation,
+} from 'react-router-dom';
 import Header from './components/Header/Header';
 import Home from './components/Home/Home';
 import User from './components/User/User';
@@ -7,13 +11,6 @@ import './App.css';
 import {
   readDb, writeDb, updateDb, signIn, signOutUser, isUserLoggedIn,
 } from './firebase/firebase';
-
-// TODO: ON APP LOADING, CHECK IF USER IS LOGGED
-
-const mockUserFollow = {
-  uuid123xyz: 'test Name',
-  uuid321zyx: 'test Name2',
-};
 
 function formatFirebaseUserData(googleData) {
   const data = {};
@@ -30,9 +27,11 @@ function formatFirebaseUserData(googleData) {
 function App() {
   const [userData, setUserData] = useState({});
   const [userFollow, setUserFollow] = useState({});
+  const navigate = useNavigate();
+  const location = useLocation();
 
   async function isUserInDb(data, uuid) {
-    const formatedData = formatFirebaseUserData(data);
+    const formattedData = formatFirebaseUserData(data);
 
     const userDbData = await readDb('users', uuid);
 
@@ -40,23 +39,28 @@ function App() {
       // If readDB return an object, user is found in database...
       console.log('yes user is in DB');
       setUserData(userDbData); // Set userData state with DB data
+
+      return;
     }
 
     // Else, if user is not in DB...
-    writeDb.writeUser(formatedData); // ... Add user to DB
+    writeDb.writeUser(formattedData); // ... Add user to DB
 
-    setUserData(formatedData); // Set userData state with formated Data
+    setUserData(formattedData); // Set userData state with formatted Data
+
+    // ... At first login, user are redirected to their user page (to modify their profile)
+    navigate(`/user/${formattedData.userUUID}`);
+
     // TBD: Check in case of error ?
   }
 
   async function onLogIn() {
     const userAuthData = await signIn();
-    // const userAuthData = 'error';
+
+    console.log(userAuthData);
 
     // If user is sign In without error
     if (userAuthData.uid) {
-      console.log(userAuthData.uid);
-
       // Check if user is in database
       await isUserInDb(userAuthData, userAuthData.uid);
 
@@ -66,6 +70,12 @@ function App() {
       if (typeof (userFollowed) === 'object') {
         // If readDB return an object, users followed is found in database...
         setUserFollow(userFollowed); // Set userData state with DB data
+
+        /** DEV_TBD if bellow redirct should be kept or not * */
+        console.log(location);
+        const currentLocation = location.pathname;
+        if (currentLocation === '/all/posts' || currentLocation === '/all/users') navigate('/');
+        // return
       }
     }
 
@@ -121,19 +131,19 @@ function App() {
 
   return (
     <div className="App">
-      <BrowserRouter>
-        <Header
-          userData={userData}
-          userFollow={userFollow}
-          onLogInClick={logInCallback}
-          onLogOutClick={logOutCallback}
-        />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/All/:param" element={<Home />} />
-          <Route path="/user/:id" element={<User />} />
-        </Routes>
-      </BrowserRouter>
+      <Header
+        userData={userData}
+        userFollow={userFollow}
+        onLogInClick={logInCallback}
+        onLogOutClick={logOutCallback}
+      />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/All/:param" element={<Home />} />
+        {' '}
+        {/* TBD, Change component Home.js -> General.js  ? */}
+        <Route path="/user/:id" element={<User />} />
+      </Routes>
     </div>
   );
 }
