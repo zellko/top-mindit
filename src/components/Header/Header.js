@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './Header.css';
+import googleIcon from '../../img/Google_ G _Logo.png';
 
 function convertFollowToArray(followObject) {
   const followArray = [];
@@ -17,18 +18,39 @@ function convertFollowToArray(followObject) {
   return followArray;
 }
 
+function returnCurrentPage(pathname) {
+  switch (pathname) {
+    case '/all/users':
+      return 'All Users';
+
+    case '/all/posts':
+      return 'All Posts';
+
+    case '/':
+      return 'Home';
+
+    default:
+      return 'User';
+  }
+}
+
 function toggleNavMenu() {
   const navMenu = document.querySelector('.nav-dropdown-content');
   navMenu.classList.toggle('show');
 }
 
-function hideNavMenu() {
-  const navMenu = document.querySelector('.nav-dropdown-content');
+function toggleProfileMenu() {
+  const navMenu = document.querySelector('.profile-dropdown-content');
+  navMenu.classList.toggle('show');
+}
+
+function hideMenu(menu) {
+  const navMenu = document.querySelector(`.${menu}-dropdown-content`);
   navMenu.classList.remove('show');
 }
 
 function Header({
-  userData, userFollow, onLogInClick, onLogOutClick,
+  userData, userFollow, onLogInClick, onLogOutClick, pathname,
 }) {
   const [userFollowArray, setUserFollowArray] = useState([]);
 
@@ -36,36 +58,53 @@ function Header({
   useEffect(() => {
     setUserFollowArray(convertFollowToArray(userFollow));
 
-    const dropdownButton = document.querySelector('.nav-dropdown-btn');
-    dropdownButton.addEventListener('click', toggleNavMenu);
+    const dropdownNavButton = document.querySelector('.nav-dropdown-btn');
+    dropdownNavButton.addEventListener('click', toggleNavMenu);
 
     const dropdownContent = document.querySelector('.nav-dropdown-content');
-    dropdownContent.addEventListener('click', hideNavMenu);
+    dropdownContent.addEventListener('click', () => hideMenu('nav'));
 
     // componentWillUnmount
     return () => {
-      dropdownButton.removeEventListener('click', toggleNavMenu);
-      dropdownContent.removeEventListener('click', hideNavMenu);
+      dropdownNavButton.removeEventListener('click', toggleNavMenu);
+      dropdownContent.removeEventListener('click', hideMenu);
     };
   }, []);
 
   // componentDidUpdate
   useEffect(() => {
+    // When user login, update the User Follow State
     setUserFollowArray(convertFollowToArray(userFollow));
+
+    // If user is logged, add eventListener to profile dropdown menu
+    let dropdownProfileBtn;
+    let dropdownProfileContent;
+    if (userData.userUUID) {
+      dropdownProfileBtn = document.querySelector('.profile-dropdown-header');
+      dropdownProfileBtn.addEventListener('click', toggleProfileMenu);
+
+      dropdownProfileContent = document.querySelector('.profile-dropdown-content');
+      dropdownProfileContent.addEventListener('click', () => hideMenu('profile'));
+    }
   }, [userFollow]);
 
   function isUserLogged() {
-    // Check if user is logged in when the page render
-    const { userUUID } = userData;
+    const { userUUID, userName } = userData;
 
     // If user is logged in, render "Log Out" and "Profile" button
     if (userUUID) {
       return (
-        <div>
-          <button type="button" onClick={onLogOutClick}>Log Out</button>
-          <button type="button" className="header-btn-profile">
-            <Link to={`/user/${userUUID}`}>Profile</Link>
-          </button>
+        <div className="profile-dropdown">
+          <div className="profile-dropdown-header">
+            <img src={`${userData.userprofilePicture}?sz=150`} alt="User profile" />
+            <button className="profile-dropdown-btn" type="button">{userData.userName}</button>
+          </div>
+          <div className="profile-dropdown-content">
+            <button type="button" className="header-btn-profile">
+              <Link to={`/user/${userName}`} state={userData}>Profile</Link>
+            </button>
+            <button type="button" onClick={onLogOutClick}>Log Out</button>
+          </div>
         </div>
       );
     }
@@ -73,25 +112,27 @@ function Header({
     // ...else, render "Log In" button
     return (
       <div>
-        <button type="button" onClick={onLogInClick}>Log In</button>
+        <button type="button" onClick={onLogInClick}>
+          <img src={googleIcon} alt="Google Icon" />
+          Log In
+        </button>
       </div>
-
     );
   }
 
   function checkForFollow() {
-    // If user is not logged in, render as special message on the select optgroup "FOLLOWED"
+    // If user is not logged in, render bellow message on the hamburger menu
     if (!userData.userUUID) {
       return (
-        <p>Log In to see followed users</p>
+        <p className="nav-dropdown-follow">Log In to see followed users</p>
       );
     }
 
     // If user is not following any other users,
-    // ...render as special message on the select optgroup "FOLLOWED"
+    // ...render bellow message on the hamburger menu
     if (userFollowArray.length === 0) {
       return (
-        <p>Users your follow will appear here</p>
+        <p className="nav-dropdown-follow">Users your follow will appear here</p>
       );
     }
 
@@ -103,15 +144,21 @@ function Header({
 
   return (
     <div className="header">
-      <h1>MindIt</h1>
-
+      <h1>
+        <Link to="/">
+          Mind
+          <span>It</span>
+        </Link>
+      </h1>
       <div className="nav-dropdown">
-        <button className="nav-dropdown-btn" type="button">NavSelector</button>
+        <button className="nav-dropdown-btn" type="button">
+          {returnCurrentPage(pathname)}
+        </button>
         <div className="nav-dropdown-content">
-          <p>FEEDS</p>
-          <p><Link to="/all/posts">All Popular Posts</Link></p>
-          <p><Link to="/all/users">All Popular Users</Link></p>
-          <p>FOLLOWED</p>
+          <p className="nav-dropdown-category">FEEDS</p>
+          <p><Link to="/all/posts">All Posts</Link></p>
+          <p><Link to="/all/users">All Users</Link></p>
+          <p className="nav-dropdown-category">FOLLOWED</p>
           {checkForFollow()}
           {
               userFollowArray.map((follow) => (
@@ -124,7 +171,9 @@ function Header({
           }
         </div>
       </div>
+
       {isUserLogged()}
+
     </div>
   );
 }
