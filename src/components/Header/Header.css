@@ -49,6 +49,15 @@
     padding: 4px 8px;
 }
 
+.profile-dropdown-content a {
+    text-align: start;
+    width: 100%;
+}
+
+.profile-dropdown-content button {
+    padding: 4px 24px;
+}
+
 .nav-dropdown-btn{
     height: 43px;
     border: 0;
@@ -80,19 +89,14 @@
 .nav-dropdown-content, .profile-dropdown-content {
     height: 0;
     visibility: hidden;
-    flex-direction: column;
     background-color: var(--color-card-header);
     border-radius: 4px;
     font-size: .8rem;
 }
 
-.nav-dropdown-content p {
-    width: 100%;
-}
-
-.nav-dropdown-content a {
+.nav-dropdown-content a{
     display: block;
-    padding: 0 0 0 16px;
+    padding: 4px 4px 0 16px;
     font-size: .9rem;
     width: 100%;
 }

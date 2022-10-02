@@ -163,7 +163,11 @@ function Header({
           {
               userFollowArray.map((follow) => (
                 <p key={follow[0]}>
-                  <Link to={`/user/${follow[0]}`} key={follow[1]}>
+                  <Link
+                    to={`/user/${follow[1]}`}
+                    key={follow[0]}
+                    state={follow}
+                  >
                     {follow[1]}
                   </Link>
                 </p>
