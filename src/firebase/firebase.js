@@ -20,9 +20,9 @@ const provider = new GoogleAuthProvider();
 
 function readDb(dbName, id) {
   return new Promise((resolve, reject) => {
-    const postsDb = ref(db, `${dbName}/${id}`);
+    const dbRef = ref(db, `${dbName}/${id}`);
 
-    get(postsDb)
+    get(dbRef)
       .then((snapshot) => {
         if (snapshot.exists()) {
           const data = snapshot.val();
@@ -172,8 +172,22 @@ const updateDb = (() => {
     return update(ref(db), updates);
   };
 
+  const updateUsersList = async (data) => {
+    // Get post ID / user uuid
+    const { userUUID, userName } = data;
+
+    // Fetch data from DB
+    const dbData = await readDb('usersList', '');
+    dbData[userUUID] = userName;
+    // Update Users list database
+    const updates = {};
+    updates['/usersList'] = dbData;
+
+    return update(ref(db), updates);
+  };
+
   return {
-    updatePost, updateComment, updateFollow,
+    updatePost, updateComment, updateFollow, updateUsersList,
   };
 })();
 
@@ -199,7 +213,7 @@ function signIn() {
         const errorMessage = error.message;
 
         console.log(`Sign-in error: ${errorCode}-${errorMessage}`);
-        reject('Sign-in error'); // rejected
+        reject('error'); // rejected
       });
   });
 }
@@ -211,7 +225,7 @@ function signOutUser() {
       resolve(true); // fulfilled
     }).catch((error) => {
       // An error happened.
-      console.log(error);
+
       console.log(`Sign-out error: ${error}`);
       reject('Sign-out error'); // rejected
     });
@@ -224,7 +238,6 @@ function isUserLoggedIn() {
       if (user) {
         // User is signed in, see docs for a list of available properties
         // https://firebase.google.com/docs/reference/js/firebase.User
-        const { uid } = user;
         resolve(user); // fulfilled
       }
       // User is signed out
