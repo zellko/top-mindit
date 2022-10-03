@@ -1,5 +1,6 @@
 import React, {
   useState, useEffect, useCallback,
+  useContext,
 } from 'react';
 import {
   Routes, Route, useNavigate, useLocation,
@@ -11,6 +12,7 @@ import './App.css';
 import {
   readDb, writeDb, updateDb, signIn, signOutUser, isUserLoggedIn,
 } from './firebase/firebase';
+import { UserDataContext } from './UserDataContext';
 
 function formatFirebaseUserData(googleData) {
   const data = {};
@@ -30,6 +32,7 @@ function App() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  /*
   async function isUserInDb(data, uuid) {
     const formattedData = formatFirebaseUserData(data);
 
@@ -45,24 +48,46 @@ function App() {
 
     // Else, if user is not in DB...
     writeDb.writeUser(formattedData); // ... Add user to DB
+    updateDb.updateUsersList(formattedData);
 
     setUserData(formattedData); // Set userData state with formatted Data
 
     // ... At first login, user are redirected to their user page (to modify their profile)
-    navigate(`/user/${formattedData.userUUID}`);
+    navigate(`/user/${formattedData.userName}`, { state: { ...formattedData } });
 
     // TBD: Check in case of error ?
-  }
+  } */
 
   async function onLogIn() {
-    const userAuthData = await signIn();
-
-    console.log(userAuthData);
+    // const userAuthData = await signIn();
+    let userAuthData;
+    try {
+      userAuthData = await signIn();
+    } catch (error) {
+      console.log('Login Error');
+      return;
+    }
 
     // If user is sign In without error
     if (userAuthData.uid) {
       // Check if user is in database
-      await isUserInDb(userAuthData, userAuthData.uid);
+      // await isUserInDb(userAuthData, userAuthData.uid);
+
+      const userDbData = await readDb('users', userAuthData.uid);
+      if (typeof (userDbData) === 'object') {
+        // If readDB return an object, user is found in database...
+        console.log('yes user is in DB');
+        setUserData(userDbData); // Set userData state with DB data
+      } else {
+        const formattedData = formatFirebaseUserData(userAuthData);
+        writeDb.writeUser(formattedData); // ... Add user to DB
+        updateDb.updateUsersList(formattedData);
+
+        setUserData(formattedData); // Set userData state with formatted Data
+
+        // ... At first login, user are redirected to their user page (to modify their profile)
+        navigate(`/user/${formattedData.userName}`, { state: { ...formattedData } });
+      }
 
       // Fetch logged user followed users
       const userFollowed = await readDb('following', userAuthData.uid);
@@ -71,8 +96,7 @@ function App() {
         // If readDB return an object, users followed is found in database...
         setUserFollow(userFollowed); // Set userData state with DB data
 
-        /** DEV_TBD if bellow redirct should be kept or not * */
-        console.log(location);
+        /** DEV_TBD if bellow redirect should be kept or not * */
         const currentLocation = location.pathname;
         if (currentLocation === '/all/posts' || currentLocation === '/all/users') navigate('/');
         // return
@@ -84,18 +108,13 @@ function App() {
 
   async function onLogOut() {
     const isSignedOut = await signOutUser();
-    // const isSignedOut = 'test';
 
     // If user is sign out without error
     if (isSignedOut) {
-      // Show modal, Signed out
-      console.log(isSignedOut);
-
       setUserData({});
     }
 
     // else, if there is an error
-
     console.log(isSignedOut);
   }
 
@@ -114,7 +133,21 @@ function App() {
         console.log('user is logged in!');
 
         // ... check if user is in database
-        await isUserInDb(userAuthData, userAuthData.uid);
+        // await isUserInDb(userAuthData, userAuthData.uid);
+        const userDbData = await readDb('users', userAuthData.uid);
+        if (typeof (userDbData) === 'object') {
+          // If readDB return an object, user is found in database...
+          console.log('yes user is in DB');
+          setUserData(userDbData); // Set userData state with DB data
+        } else {
+          const formattedData = formatFirebaseUserData(userAuthData);
+          writeDb.writeUser(formattedData); // ... Add user to DB
+          updateDb.updateUsersList(formattedData);
+          setUserData(formattedData); // Set userData state with formatted Data
+
+          // ... At first login, user are redirected to their user page (to modify their profile)
+          navigate(`/user/${formattedData.userName}`);
+        }
 
         // Fetch logged user followed users
         const userFollowed = await readDb('following', userAuthData.uid);
@@ -130,21 +163,44 @@ function App() {
   }, []);
 
   return (
-    <div className="App">
-      <Header
-        userData={userData}
-        userFollow={userFollow}
-        onLogInClick={logInCallback}
-        onLogOutClick={logOutCallback}
-      />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/All/:param" element={<Home />} />
-        {' '}
-        {/* TBD, Change component Home.js -> General.js  ? */}
-        <Route path="/user/:id" element={<User />} />
-      </Routes>
-    </div>
+    <UserDataContext.Provider value={userData}>
+      <div className="App">
+
+        <Header
+          userData={userData}
+          userFollow={userFollow}
+          pathname={location.pathname}
+          onLogInClick={logInCallback}
+          onLogOutClick={logOutCallback}
+        />
+
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/All/:param" element={<Home />} />
+          {' '}
+          {/* TBD, Change component Home.js -> General.js  ? */}
+          <Route
+            path="/user/:id"
+            element={(
+              <User
+                loadUserData={async (uuid) => {
+                  const dbData = await readDb('users', uuid);
+                  return dbData;
+                }}
+                loadUserPost={async (uuid) => {
+                  const dbData = await readDb('posts', uuid);
+                  return dbData;
+                }}
+                loadUserList={async () => {
+                  const dbData = await readDb('usersList', '');
+                  return dbData;
+                }}
+              />
+)}
+          />
+        </Routes>
+      </div>
+    </UserDataContext.Provider>
   );
 }
 
