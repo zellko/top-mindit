@@ -96,7 +96,7 @@ function Header({
       return (
         <div className="profile-dropdown">
           <div className="profile-dropdown-header">
-            <img src={`${userData.userprofilePicture}?sz=150`} alt="User profile" />
+            <img src={`${userData.userprofilePicture}?sz=150`} referrerPolicy="no-referrer" alt="User profile" />
             <button className="profile-dropdown-btn" type="button">{userData.userName}</button>
           </div>
           <div className="profile-dropdown-content">

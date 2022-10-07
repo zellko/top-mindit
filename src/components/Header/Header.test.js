@@ -14,7 +14,7 @@ const mockUserData = {
 };
 
 const mockUserFollow = {
-  uuid123xyz: 'test Name',
+  uuid123xyz: 'test Follow Name',
 };
 
 describe('Header: Component Rendering', () => {
@@ -25,7 +25,7 @@ describe('Header: Component Rendering', () => {
       </BrowserRouter>,
     );
 
-    const button = screen.getByRole('button', { name: 'Log In' });
+    const button = screen.getByRole('button', { name: 'Google Icon Log In' });
 
     expect(button).toBeInTheDocument();
   });
@@ -73,7 +73,7 @@ describe('Header: Component Rendering', () => {
       </BrowserRouter>,
     );
 
-    const followOption = screen.getByText('test Name');
+    const followOption = screen.getByText('test Follow Name');
     expect(followOption).toBeInTheDocument();
   });
 
@@ -103,7 +103,7 @@ describe('Header: Functions', () => {
       </BrowserRouter>,
     );
 
-    const button = screen.getByRole('button', { name: 'Log In' });
+    const button = screen.getByRole('button', { name: 'Google Icon Log In' });
 
     userEvent.click(button);
 
