@@ -146,7 +146,7 @@ function App() {
           setUserData(formattedData); // Set userData state with formatted Data
 
           // ... At first login, user are redirected to their user page (to modify their profile)
-          navigate(`/user/${formattedData.userName}`);
+          navigate(`/user/${formattedData.userName}`, { state: { ...formattedData } });
         }
 
         // Fetch logged user followed users
@@ -194,6 +194,10 @@ function App() {
                 loadUserList={async () => {
                   const dbData = await readDb('usersList', '');
                   return dbData;
+                }}
+                writePostToDb={(data) => {
+                  console.log(data);
+                  writeDb.writePost(data);
                 }}
               />
 )}

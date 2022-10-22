@@ -1,0 +1,97 @@
+:root{
+    --color-card-header: #1a1a1b;
+    --color-card-bg: #1a1a1b;
+    --color-card-bg-clear: #272729;
+    --color-bg: #030303 ;
+    --color-btn-login: #1a1a1b;
+    --color-btn-login-hover: #2F2E33;
+    --color-border:  #343536;
+    --color-dark: #1a1a1b;
+    --color-grey: #D7DADC;
+    --color-pink: #DD7C7E;
+    --color-green: #46d160;
+    --color-red: #ea0027;
+    --color-blue: #4FBCFF;;
+  }
+
+.create-post{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--color-card-bg);
+    border-radius: 4px;
+    border: 1px solid var(--color-border);
+    width: 90%;
+    padding: 8px;
+    margin: 16px 0;
+}
+
+.create-post > *{
+    flex: 1;
+}
+
+.create-post form > :first-child{
+   display: flex;
+}
+
+.form-extend{
+    display: none;
+    position: relative;
+}
+
+/* .create-post form > :first-child img{
+   height: 38px;
+   border-radius: 9999px;
+   margin-right: 8px;
+} */
+ 
+.create-post input, .create-post textarea{
+    background-color: var(--color-card-bg-clear);
+    color: var(--color-grey);
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    width: 100%;
+    padding:  0 16px;
+}
+
+.create-post input:hover, .create-post textarea:hover{
+    background-color: var(--color-card-bg);
+    border: 1px solid var(--color-grey);
+}
+
+.create-post input{
+    height: 38px;
+}
+
+.create-post textarea{
+    margin-top: 8px;
+}
+
+.create-post button{
+    color: var(--color-dark);
+    background-color: var(--color-grey);
+    margin: 8px 0;
+}
+
+.create-post button:hover{
+    opacity: 0.9;
+    color: var(--color-dark);
+    background-color: var(--color-grey);
+}
+
+.form-extend-close{
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    color: var(--color-pink);
+    font-size: 2rem;
+}
+
+.form-extend-close:hover{
+    cursor: pointer;
+    opacity: 0.9;
+}
+
+.show-create-post {
+    display: block;
+}
