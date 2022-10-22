@@ -1,0 +1,67 @@
+.user-intro{
+    background-color: var(--color-card-bg);
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 0 0 16px 0;
+}
+
+.user-intro > *{
+    padding: 0 5%;
+}
+
+.user-intro-name{
+    display: flex;
+    flex-direction: column;
+}
+
+.user-intro-name > div{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px;
+}
+
+.user-intro-banner{
+    height: 80px;
+    background-color: var(--color-blue);
+    opacity: 0.8;
+    z-index: 0;
+}
+
+.user-intro-header{
+    display: flex;
+    gap: 16px;
+    z-index: 1;
+}
+
+.user-intro-header h1{
+    font-size: calc(1rem + 2vw);
+}
+
+.user-intro-header p{
+    font-size: 0.8rem;
+    color: var(--color-pink);
+}
+
+.user-intro-header button{
+    padding: 5px 32px;
+}
+
+.user-intro-header img{
+    position: relative;
+    top: -30px;
+    height: 80px;
+    border-radius: 9999px;
+}
+
+
+.user-intro-topics{
+    display: flex;
+    align-items: center;
+}
+
+.user-intro-topics :nth-child(2){
+    margin-left: 16px;
+}

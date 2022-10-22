@@ -1,10 +1,13 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams, useLocation, Link } from 'react-router-dom';
-import UserIntro from './UserIntro/UserIntro';
 import { UserDataContext } from '../../UserDataContext';
+import UserIntro from './UserIntro/UserIntro';
+import CreatePost from '../CreatePost/CreatePost';
 import './User.css';
 
-function User({ loadUserData, loadUserPost, loadUserList }) {
+function User({
+  loadUserData, loadUserPost, loadUserList, writePostToDb,
+}) {
   const params = useParams();
   const data = useLocation();
   const UserData = useContext(UserDataContext);
@@ -47,8 +50,8 @@ function User({ loadUserData, loadUserPost, loadUserList }) {
     if (data.state) {
       // ..if yes, load User data with provided uuid
       // .. and load Posts
-      dbUserData(data.state[0]);
-      dbUserPost(data.state[0]);
+      dbUserData(data.state.userUUID);
+      dbUserPost(data.state.userUUID);
       return;
     }
 
@@ -69,6 +72,12 @@ function User({ loadUserData, loadUserPost, loadUserList }) {
       return (
         <UserIntro
           data={userDbData}
+          editProfile={() => {
+            console.log('ToDo: Edit profile');
+          }}
+          addUserToFollowed={() => {
+            console.log('ToDo: addUserToFollowed');
+          }}
         />
       );
     }
@@ -90,9 +99,22 @@ function User({ loadUserData, loadUserPost, loadUserList }) {
     return null;
   }
 
+  function isUserLogged() {
+    if (UserData.userUUID === userDbData.userUUID) {
+      return (
+        <CreatePost
+          addPostToDb={(postData) => {
+            writePostToDb(postData);
+          }}
+        />
+      );
+    }
+  }
+
   return (
     <div className="User">
       {isUserExist()}
+      {isUserLogged()}
       {isPostExist()}
     </div>
   );
