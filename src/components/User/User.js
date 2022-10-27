@@ -4,19 +4,32 @@ import { UserDataContext } from '../../UserDataContext';
 import UserIntro from './UserIntro/UserIntro';
 import CreatePost from '../CreatePost/CreatePost';
 import './User.css';
+import Post from '../Post/Post';
 
 function User({
-  loadUserData, loadUserPost, loadUserList, writePostToDb,
+  loadUserData, loadUserPost, loadUserList, writePostToDb, sortPosts,
 }) {
   const params = useParams();
   const data = useLocation();
   const UserData = useContext(UserDataContext);
   const [userDbPost, setUserDbPost] = useState({});
   const [userDbData, setUserDbData] = useState({});
+  const [postCreated, setPostCreated] = useState(0);
 
+  // componentDidUpdate
   useEffect(() => {
     async function dbUserPost(uuid) {
       const dbData = await loadUserPost(uuid);
+
+      console.log(dbData);
+
+      if (dbData !== 'No data available') {
+        const sortedPost = sortPosts.newest(dbData);
+        console.log(sortedPost);
+        setUserDbPost(sortedPost);
+        return;
+      }
+
       setUserDbPost(dbData);
     }
 
@@ -65,7 +78,7 @@ function User({
     return () => {
       console.log('componentWillUnmount');
     };
-  }, [params, data]);
+  }, [params, data, postCreated]);
 
   function isUserExist() {
     if (userDbData.userName) {
@@ -95,7 +108,24 @@ function User({
   }
 
   function isPostExist() {
-    // ToDo
+    if (userDbPost === 'No data available') {
+      return (
+        <div> This user did not posted anything yet! </div>
+      );
+    }
+
+    if (userDbPost.length > 0) {
+      return (
+        userDbPost.map((postId) => (
+          <Post
+            postData={postId[1]}
+            userData={userDbData}
+            key={postId[0]}
+          />
+        ))
+      );
+    }
+
     return null;
   }
 
@@ -105,6 +135,10 @@ function User({
         <CreatePost
           addPostToDb={(postData) => {
             writePostToDb(postData);
+
+            // Refresh state in order to "refresh" page so the new post created appear
+            const n = postCreated;
+            setPostCreated(n + 1);
           }}
         />
       );
