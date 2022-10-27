@@ -94,6 +94,7 @@ function CreatePost({ addPostToDb }) {
       title: postTitle.value,
       content: postContent.value,
       authorUUID: UserData.userUUID,
+      author: UserData.userName,
       topics: postTopic,
       postId: `${UserData.userUUID.slice(0, 8)}-${Math.round(Math.random() * 1000000)}`,
     });

@@ -7,7 +7,6 @@
     border: 1px solid var(--color-border);
     width: 90%;
     padding: 8px;
-    margin: 16px 0;
 }
 
 .create-post > *{
