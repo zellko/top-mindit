@@ -14,6 +14,35 @@ import {
 } from './firebase/firebase';
 import { UserDataContext } from './UserDataContext';
 
+const sortPosts = (() => {
+  const newest = (postsList) => {
+    let postsEntries;
+
+    if (Array.isArray(postsList)) {
+      postsEntries = postsList;
+    } else {
+      postsEntries = Object.entries(postsList);
+    }
+
+    const sortedPosts = postsEntries.sort((a, b) => b[1].postTimestamp - a[1].postTimestamp);
+    return sortedPosts;
+  };
+  const oldest = (postsList) => {
+    let postsEntries;
+
+    if (Array.isArray(postsList)) {
+      postsEntries = postsList;
+    } else {
+      postsEntries = Object.entries(postsList);
+    }
+
+    const sortedPosts = postsEntries.sort((a, b) => a[1].postTimestamp - b[1].postTimestamp);
+    return sortedPosts;
+  };
+
+  return { newest, oldest };
+})();
+
 function formatFirebaseUserData(googleData) {
   const data = {};
   // Return user data as an object
@@ -175,8 +204,32 @@ function App() {
         />
 
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/All/:param" element={<Home />} />
+          <Route
+            path="/"
+            element={(
+              <Home
+                loadUserData={async (uuid) => {
+                  const dbData = await readDb('users', uuid);
+                  return dbData;
+                }}
+                loadUserFollow={async (uuid) => {
+                  const dbData = await readDb('following', uuid);
+                  return dbData;
+                }}
+                loadUserPost={async (uuid) => {
+                  const dbData = await readDb('posts', uuid);
+                  return dbData;
+                }}
+                sortPosts={sortPosts}
+              />
+)}
+          />
+          <Route
+            path="/All/:param"
+            element={(
+              <Home />
+)}
+          />
           {' '}
           {/* TBD, Change component Home.js -> General.js  ? */}
           <Route
@@ -196,9 +249,9 @@ function App() {
                   return dbData;
                 }}
                 writePostToDb={(data) => {
-                  console.log(data);
                   writeDb.writePost(data);
                 }}
+                sortPosts={sortPosts}
               />
 )}
           />
