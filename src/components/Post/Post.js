@@ -2,9 +2,20 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import Pill from '../Pill/Pill';
 import './Post.css';
+import defaultProfileImg from '../../img/profile_default.jpg';
+
+const undefinedUserdata = {
+  isFirstLogin: false,
+  userBio: undefined,
+  userName: undefined,
+  userTopic: [],
+  userUUID: '',
+  userprofilePicture: defaultProfileImg,
+};
 
 function Post({ postData, userData }) {
   const topicArray = postData.topics;
+  let userDataChecked = userData;
 
   function postTime() {
     const secElapsed = (Date.now() - postData.postTimestamp) / 1000;
@@ -23,10 +34,20 @@ function Post({ postData, userData }) {
     return 'less than 1 hour';
   }
 
+  if (userData === undefined) {
+    // If user data are undefined, use blank data
+    // ... avoid crash when data are loading
+    userDataChecked = undefinedUserdata;
+  } else if (userData.userprofilePicture === 'null') {
+    // If user data are undefined, use blank data
+    // ... avoid crash when data are loading
+    userDataChecked.userprofilePicture = defaultProfileImg;
+  }
+
   return (
     <div className="post">
       <div className="post-sidebar">
-        <img src={`${userData.userprofilePicture}?sz=150`} referrerPolicy="no-referrer" alt="User profile" />
+        <img src={`${userDataChecked.userprofilePicture}?sz=150`} referrerPolicy="no-referrer" alt="User profile" />
       </div>
       <div className="post-content">
         <div className="post-content-top">
@@ -41,7 +62,7 @@ function Post({ postData, userData }) {
           {postData.content}
         </div>
         <div className="post-content-bot">
-          <Link to={`/user/${userData.userName}`}>
+          <Link to={`/user/${userDataChecked.userName}`}>
             {postData.author}
           </Link>
           <span>{`${postTime()} ago`}</span>
