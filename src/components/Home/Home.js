@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useParams, useLocation, Link } from 'react-router-dom';
 import { UserDataContext } from '../../UserDataContext';
 import Post from '../Post/Post';
+import UserCard from '../UserCard/UserCard';
 import './Home.css';
 
 function mergeUsers(usersList) {
@@ -83,6 +84,19 @@ function Home({
       setHomeDbPost(sortedPost);
     }
 
+    async function dbAllUsers() {
+      // Load all users profiles
+      const dbData = await loadUserData('');
+
+      if (dbData === 'No data available') {
+        console.log('No data available ');
+        console.log(dbData);
+      }
+
+      console.log(dbData);
+      setHomeDbUser(dbData);
+    }
+
     async function dbFollow(uuid) {
       // Load user follow data's and post's
       const dbData = await loadUserFollow(uuid);
@@ -125,6 +139,21 @@ function Home({
     }
 
     // When the page mount...
+    // ... if params = posts, load all users posts
+    if (param === 'posts') {
+      // Load all users posts
+      console.log('Load all posts');
+      dbAllPosts();
+      return;
+    }
+
+    if (param === 'users') {
+      // Load all users profiles
+      console.log('Load all users');
+      dbAllUsers();
+      return;
+    }
+
     // ... if user is logged in
     if (UserData.userUUID) {
       // Load user follow and follow posts
@@ -141,9 +170,28 @@ function Home({
     return () => {
       console.log('componentWillUnmount');
     };
-  }, [UserData]);
+  }, [UserData, param]);
 
-  function isPostExist() {
+  function loadCards() {
+    if (param === 'users') {
+      console.log(homeDbUser);
+      // Load users cards
+      const usersKeys = Object.keys(homeDbUser);
+
+      return (
+        usersKeys.map((postId) => (
+          <UserCard
+            userData={homeDbUser[postId]}
+            key={postId}
+            addUserToFollowed={(uuid) => {
+              console.log('ToDo: addUserToFollowed');
+              console.log(uuid);
+            }}
+          />
+        ))
+      );
+    }
+
     if (homeDbPost === 'No data available') {
       return (
         <div> Not post found! </div>
@@ -167,7 +215,7 @@ function Home({
 
   return (
     <div className="home">
-      {isPostExist()}
+      {loadCards()}
       <br />
       HOME -
       {' '}

@@ -227,7 +227,21 @@ function App() {
           <Route
             path="/All/:param"
             element={(
-              <Home />
+              <Home
+                loadUserData={async (uuid) => {
+                  const dbData = await readDb('users', uuid);
+                  return dbData;
+                }}
+                loadUserFollow={async (uuid) => {
+                  const dbData = await readDb('following', uuid);
+                  return dbData;
+                }}
+                loadUserPost={async (uuid) => {
+                  const dbData = await readDb('posts', uuid);
+                  return dbData;
+                }}
+                sortPosts={sortPosts}
+              />
 )}
           />
           {' '}
