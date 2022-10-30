@@ -106,6 +106,7 @@ const updateDb = (() => {
     // Check that DB is containing a post with corresponding to postId
     const postIdArray = Object.keys(dbData);
 
+    // ------> TBD Should I add String(postId)?????????
     if (postIdArray.includes(`${postId}`)) {
       const updates = {};
       updates[`/posts/${authorUUID}/${postId}`] = data;
@@ -156,7 +157,7 @@ const updateDb = (() => {
       return update(ref(db), updates);
     }
 
-    const isFollowInDb = dbDataKey.includes(follow[0]);
+    const isFollowInDb = dbDataKey.includes(String(follow[0]));
 
     if (isFollowInDb) {
       // If db include the follow UUID, remove it from DB.
