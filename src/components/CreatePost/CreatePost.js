@@ -5,7 +5,8 @@ import { UserDataContext } from '../../UserDataContext';
 import './CreatePost.css';
 
 function CreatePost({ addPostToDb }) {
-  const UserData = useContext(UserDataContext);
+  const getContext = useContext(UserDataContext);
+  const { userData, userFollow } = getContext;
   const [postTopic, setPostTopic] = useState([]);
   const refAddTopic = useRef(null);
   const refClose = useRef(null);
@@ -29,7 +30,6 @@ function CreatePost({ addPostToDb }) {
       if (topicArray.length > 2) return;
 
       topicArray.push(inputTopic.value);
-
       setPostTopic(topicArray);
     };
 
@@ -87,16 +87,16 @@ function CreatePost({ addPostToDb }) {
     // ... user is logged
     if (postTitle.value.length === 0 || postContent.value.length === 0) return;
     if (postTopic.length < 1 || postTopic.length > 3) return;
-    if (!UserData.userUUID) return;
+    if (!userData.userUUID) return;
 
     // Add post to Firebase DB
     addPostToDb({
       title: postTitle.value,
       content: postContent.value,
-      authorUUID: UserData.userUUID,
-      author: UserData.userName,
+      authorUUID: userData.userUUID,
+      author: userData.userName,
       topics: postTopic,
-      postId: `${UserData.userUUID.slice(0, 8)}-${Math.round(Math.random() * 1000000)}`,
+      postId: `${userData.userUUID.slice(0, 8)}-${Math.round(Math.random() * 1000000)}`,
     });
 
     clearForm();
@@ -119,7 +119,7 @@ function CreatePost({ addPostToDb }) {
     <div className="create-post">
       <form>
         <div>
-          {/* <img src={`${UserData.userprofilePicture}?sz=150`} referrerPolicy="no-referrer" alt="User profile" /> */}
+          {/* <img src={`${userData.userprofilePicture}?sz=150`} referrerPolicy="no-referrer" alt="User profile" /> */}
           <input className="input-title" placeholder="Create Post" />
         </div>
 
