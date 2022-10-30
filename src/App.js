@@ -1,5 +1,5 @@
 import React, {
-  useState, useEffect, useCallback,
+  useState, useEffect, useCallback, useMemo,
   useContext,
 } from 'react';
 import {
@@ -60,6 +60,7 @@ function App() {
   const [userFollow, setUserFollow] = useState({});
   const navigate = useNavigate();
   const location = useLocation();
+  const [dbUpdate, setDbUpdate] = useState(0);
 
   /*
   async function isUserInDb(data, uuid) {
@@ -180,19 +181,22 @@ function App() {
 
         // Fetch logged user followed users
         const userFollowed = await readDb('following', userAuthData.uid);
-
         if (typeof (userFollowed) === 'object') {
         // If readDB return an object, users followed is found in database...
           setUserFollow(userFollowed); // Set userData state with DB data
+        } else {
+          setUserFollow({}); // Set userData state with DB data
         }
       }
     }
 
     checkIsUserLoggedIn();
-  }, []);
+  }, [dbUpdate]);
+
+  const userDataMemo = useMemo(() => ({ userData, userFollow }), [userData, userFollow]);
 
   return (
-    <UserDataContext.Provider value={userData}>
+    <UserDataContext.Provider value={userDataMemo}>
       <div className="App">
 
         <Header
@@ -241,6 +245,13 @@ function App() {
                   return dbData;
                 }}
                 sortPosts={sortPosts}
+                userFollow={userFollow}
+                addFollow={(uuid, data, dbName) => {
+                  updateDb.updateFollow(uuid, data, dbName);
+                  // Refresh state in order to "refresh" page so the new post created appear
+                  const n = dbUpdate;
+                  setDbUpdate(n + 1);
+                }}
               />
 )}
           />
@@ -263,9 +274,19 @@ function App() {
                   return dbData;
                 }}
                 writePostToDb={(data) => {
+                  console.log('witepost');
                   writeDb.writePost(data);
+                  // Refresh state in order to "refresh" page so the new post created appear
+                  const n = dbUpdate;
+                  setDbUpdate(n + 1);
                 }}
                 sortPosts={sortPosts}
+                addFollow={(uuid, followData, dbName) => {
+                  updateDb.updateFollow(uuid, followData, dbName);
+                  // Refresh state in order to "refresh" page so the new post created appear
+                  const n = dbUpdate;
+                  setDbUpdate(n + 1);
+                }}
               />
 )}
           />
