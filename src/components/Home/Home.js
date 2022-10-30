@@ -35,10 +35,12 @@ function mergePosts(postsList) {
 }
 
 function Home({
-  loadUserData, loadUserFollow, loadUserPost, sortPosts,
+  loadUserData, loadUserFollow, loadUserPost, sortPosts, addFollow,
 }) {
   const { param } = useParams();
-  const UserData = useContext(UserDataContext);
+  const getContext = useContext(UserDataContext);
+  const { userData, userFollow } = getContext;
+
   const [homeDbPost, setHomeDbPost] = useState({});
   const [homeDbUser, setHomeDbUser] = useState({});
 
@@ -155,10 +157,10 @@ function Home({
     }
 
     // ... if user is logged in
-    if (UserData.userUUID) {
+    if (userData.userUUID) {
       // Load user follow and follow posts
       console.log('Load user follow and followed user post');
-      dbFollow(UserData.userUUID);
+      dbFollow(userData.userUUID);
       return;
     }
 
@@ -170,22 +172,20 @@ function Home({
     return () => {
       console.log('componentWillUnmount');
     };
-  }, [UserData, param]);
+  }, [userData, param]);
 
   function loadCards() {
     if (param === 'users') {
-      console.log(homeDbUser);
       // Load users cards
       const usersKeys = Object.keys(homeDbUser);
 
       return (
         usersKeys.map((postId) => (
           <UserCard
-            userData={homeDbUser[postId]}
+            userCardData={homeDbUser[postId]}
             key={postId}
-            addUserToFollowed={(uuid) => {
-              console.log('ToDo: addUserToFollowed');
-              console.log(uuid);
+            addUserToFollowed={(data) => {
+              addFollow(userData.userUUID, data, 'following');
             }}
           />
         ))
@@ -221,8 +221,8 @@ function Home({
       {' '}
       {param}
       <br />
-      UserData:
-      {UserData.userUUID}
+      userData:
+      {userData.userUUID}
       <br />
     </div>
   );

@@ -7,25 +7,22 @@ import './User.css';
 import Post from '../Post/Post';
 
 function User({
-  loadUserData, loadUserPost, loadUserList, writePostToDb, sortPosts,
+  loadUserData, loadUserPost, loadUserList, writePostToDb, sortPosts, addFollow,
 }) {
   const params = useParams();
   const data = useLocation();
-  const UserData = useContext(UserDataContext);
+  const getContext = useContext(UserDataContext);
+  const { userData, userFollow } = getContext;
   const [userDbPost, setUserDbPost] = useState({});
   const [userDbData, setUserDbData] = useState({});
-  const [postCreated, setPostCreated] = useState(0);
 
   // componentDidUpdate
   useEffect(() => {
     async function dbUserPost(uuid) {
       const dbData = await loadUserPost(uuid);
 
-      console.log(dbData);
-
       if (dbData !== 'No data available') {
         const sortedPost = sortPosts.newest(dbData);
-        console.log(sortedPost);
         setUserDbPost(sortedPost);
         return;
       }
@@ -78,19 +75,20 @@ function User({
     return () => {
       console.log('componentWillUnmount');
     };
-  }, [params, data, postCreated]);
+  }, [params, data]);
 
   function isUserExist() {
     if (userDbData.userName) {
       return (
         <UserIntro
-          data={userDbData}
+          userIntroCardData={userDbData}
           editProfile={() => {
             console.log('ToDo: Edit profile');
           }}
-          addUserToFollowed={() => {
-            console.log('ToDo: addUserToFollowed');
+          addUserToFollowed={(followData) => {
+            addFollow(userData.userUUID, followData, 'following');
           }}
+
         />
       );
     }
@@ -130,15 +128,11 @@ function User({
   }
 
   function isUserLogged() {
-    if (UserData.userUUID === userDbData.userUUID) {
+    if (userData.userUUID === userDbData.userUUID) {
       return (
         <CreatePost
           addPostToDb={(postData) => {
             writePostToDb(postData);
-
-            // Refresh state in order to "refresh" page so the new post created appear
-            const n = postCreated;
-            setPostCreated(n + 1);
           }}
         />
       );

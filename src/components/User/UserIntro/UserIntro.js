@@ -1,29 +1,76 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useContext } from 'react';
 import { UserDataContext } from '../../../UserDataContext';
 import Pill from '../../Pill/Pill';
 import './UserIntro.css';
+import defaultProfileImg from '../../../img/profile_default.jpg';
 
-function UserIntro({ data, editProfile, addUserToFollowed }) {
-  const UserData = useContext(UserDataContext);
-  const [profileImage, setProfileImage] = useState('');
+const undefinedUserdata = {
+  isFirstLogin: false,
+  userBio: undefined,
+  userName: undefined,
+  userTopic: [],
+  userUUID: '',
+  userprofilePicture: defaultProfileImg,
+};
+
+function UserIntro({ userIntroCardData, editProfile, addUserToFollowed }) {
+  const getContext = useContext(UserDataContext);
+  const { userData, userFollow } = getContext;
 
   const {
     userName, userprofilePicture, userBio, userTopic, userUUID,
-  } = data;
+  } = userIntroCardData;
+
+  let userDataChecked = userIntroCardData;
+
+  if (userIntroCardData === undefined) {
+    // If user data are undefined, use blank data
+    // ... avoid crash when data are loading
+    userDataChecked = undefinedUserdata;
+  } else if (userIntroCardData.userprofilePicture === 'null') {
+    // If user data are undefined, use blank data
+    // ... avoid crash when data are loading
+    userDataChecked.userprofilePicture = defaultProfileImg;
+  }
 
   function renderButton() {
-    if (!UserData.userUUID) {
+    if (!userData.userUUID) {
       return null;
     }
 
-    if (UserData.userUUID === userUUID) {
+    // If user is looking at his home profile, render "Edit" button
+    if (userData.userUUID === userUUID) {
       return (
         <button type="button" onClick={editProfile}>Edit</button>
       );
     }
 
+    // If user is already followed, render "unfollow"
+    const followedUsersUUID = Object.keys(userFollow);
+    if (followedUsersUUID.includes(String(userIntroCardData.userUUID))) {
+      return (
+        <button
+          type="button"
+          onClick={() => {
+            addUserToFollowed([userUUID, userName]);
+          }}
+        >
+          Unfollow
+        </button>
+      );
+    }
+
+    // If user is not followed, render "follow"
     return (
-      <button type="button" onClick={addUserToFollowed}>Follow</button>
+      <button
+        type="button"
+        onClick={() => {
+          addUserToFollowed([userUUID, userName]);
+        }}
+      >
+        Follow
+
+      </button>
     );
   }
 
@@ -47,7 +94,7 @@ function UserIntro({ data, editProfile, addUserToFollowed }) {
       <div className="user-intro-topics">
         <p>Main Thought: </p>
         {userTopic.map((topic) => (
-          <Pill text={topic} pillColor="" key={topic} />
+          <Pill text={topic} pillColor="#B6686A" key={topic} />
         ))}
         <p />
       </div>
