@@ -2,10 +2,12 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    height: 49px;
-    padding: 0 20px;
+    padding: 4px 20px;
     gap: 8px;
     background-color: var(--color-card-header);
+    z-index: 2;
+    border-top: 1px solid var(--color-border);
+    border-bottom: 2px solid var(--color-border);
 }
 
 .header h1{

@@ -25,3 +25,8 @@ yarn-error.log*
 .vscode/
 .eslintrc.json
 .env
+
+/doc/.backup
+/doc/.$MindIt_DesignIdea.drawio.bkp
+/doc/.$MindIt_DesignIdea.drawio.dtmp
+.note.js

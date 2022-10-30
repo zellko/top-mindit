@@ -4,4 +4,6 @@
     color: var(--color-dark);
     padding: 4px 12px;
     font-weight: 600;
+    display: flex;
+    align-items: center;
 }

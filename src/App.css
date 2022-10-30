@@ -2,29 +2,79 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    transition: border .2s ease-in-out, 
+    background-color .2s ease-in-out;
   }
   
-  :root{
-    --color-card-header: #272729;
-    --color-card-bg: #1a1a1b;
-    --color-card-bg-clear: #272729;
-    --color-bg: #030303 ;
-    --color-grey: #D7DADC;
-    --color-pink: #DD7C7E;
-    --color-green: #46d160;
-    --color-red: #ea0027;
-    --color-blue: #4FBCFF;;
-  }
-  
-  @font-face {
-    font-family: "Montserrat";
-    src: local("Montserrat"),
-    url("./fonts/Montserrat/Montserrat-VariableFont_wght.ttf") format("truetype");
-  }
-  
-  body {
-    font-family: Montserrat, ubuntu, Verdana, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-  
+:root{
+  --color-card-header: #1a1a1b;
+  --color-card-bg: #1a1a1b;
+  --color-card-bg-clear: #272729;
+  --color-bg: #030303 ;
+  --color-btn-login: #1a1a1b;
+  --color-btn-login-hover: #2F2E33;
+  --color-border:  #343536;
+  --color-dark: #1a1a1b;
+  --color-grey: #D7DADC;
+  --color-pink: #DD7C7E;
+  --color-green: #46d160;
+  --color-red: #ea0027;
+  --color-blue: #4FBCFF;
+  --color-post-sidebar: #161617;
+}
+
+@font-face {
+  font-family: "Montserrat";
+  src: local("Montserrat"),
+  url("./fonts/Montserrat/Montserrat-VariableFont_wght.ttf") format("truetype");
+}
+
+body {
+  font-family: Montserrat, ubuntu, Verdana, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: var(--color-grey);
+  background-color: var(--color-bg);
+  height: 100%;
+  min-height: 100vh;
+}
+
+.App {
+  display: flex;
+  flex-direction: column;
+}
+
+a{
+  text-decoration: none;
+  color: inherit;
+}
+
+button{
+  border: 1px solid var(--color-grey);
+  border-radius: 9999px;
+  font-weight: 700;
+  padding: 5px 16px;
+  font-size: .9rem;
+  background-color: var(--color-btn-login);
+  color: var(--color-grey);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+button:hover{
+  cursor: pointer;
+  background-color: var(--color-btn-login-hover);
+}
+
+button img{
+  width: 16px;
+}
+
+span{
+  color: var(--color-pink);
+}
+
+::after{
+  color: var(--color-pink);
+}

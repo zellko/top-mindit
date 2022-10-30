@@ -166,7 +166,12 @@ function Header({
                   <Link
                     to={`/user/${follow[1]}`}
                     key={follow[0]}
-                    state={follow}
+                    state={
+                {
+                  userName: follow[1],
+                  userUUID: follow[0],
+                }
+                    }
                   >
                     {follow[1]}
                   </Link>

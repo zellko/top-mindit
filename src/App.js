@@ -274,7 +274,6 @@ function App() {
                   return dbData;
                 }}
                 writePostToDb={(data) => {
-                  console.log('witepost');
                   writeDb.writePost(data);
                   // Refresh state in order to "refresh" page so the new post created appear
                   const n = dbUpdate;
