@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import './UserCard.css';
 import { Link } from 'react-router-dom';
+import { UserDataContext } from '../../UserDataContext';
 import defaultProfileImg from '../../img/profile_default.jpg';
 import Pill from '../Pill/Pill';
 
@@ -15,14 +16,16 @@ const undefinedUserdata = {
 
 const testBG = 'url("https://cdn.pixabay.com/photo/2015/10/29/14/38/web-1012467__340.jpg")';
 
-function UserCard({ userData, addUserToFollowed }) {
-  let userDataChecked = userData;
+function UserCard({ userCardData, addUserToFollowed }) {
+  const getContext = useContext(UserDataContext);
+  const { userData, userFollow } = getContext;
+  let userDataChecked = userCardData;
 
-  if (userData === undefined) {
+  if (userCardData === undefined) {
     // If user data are undefined, use blank data
     // ... avoid crash when data are loading
     userDataChecked = undefinedUserdata;
-  } else if (userData.userprofilePicture === 'null') {
+  } else if (userCardData.userprofilePicture === 'null') {
     // If user data are undefined, use blank data
     // ... avoid crash when data are loading
     userDataChecked.userprofilePicture = defaultProfileImg;
@@ -31,10 +34,55 @@ function UserCard({ userData, addUserToFollowed }) {
   function renderPills(topicArray) {
     return (
       topicArray.map((topic) => (
-        <Pill text={topic} />
+        <Pill text={topic} key={topic} />
       ))
     );
   }
+
+  function renderFollowBtn() {
+    // If it's the card of logged user, do not render follow button
+    if (userData.userUUID === userCardData.userUUID) return null;
+
+    // If the card from user rendered is already followed, render "unfollow"
+    const followedUsersUUID = Object.keys(userFollow);
+    if (followedUsersUUID.includes(String(userCardData.userUUID))) {
+      return (
+        <button
+          type="button"
+          onClick={(e) => {
+            const { id, name } = e.target.attributes;
+
+            addUserToFollowed([id.value, name.value]);
+          }}
+          id={userDataChecked.userUUID}
+          name={userDataChecked.userName}
+        >
+          Unfollow
+        </button>
+      );
+    }
+
+    // If the card from user rendered is not followed, render "follow"
+    if (userData.userUUID) {
+      return (
+        <button
+          type="button"
+          onClick={(e) => {
+            const { id, name } = e.target.attributes;
+
+            addUserToFollowed([id.value, name.value]);
+          }}
+          id={userDataChecked.userUUID}
+          name={userDataChecked.userName}
+        >
+          Follow
+        </button>
+      );
+    }
+
+    return null;
+  }
+
   return (
     <div className="user-card">
       <div
@@ -51,19 +99,7 @@ function UserCard({ userData, addUserToFollowed }) {
             <h1>{userDataChecked.userName}</h1>
           </Link>
         </div>
-        <button
-          type="button"
-          onClick={(e) => {
-            const { id, name } = e.target.attributes;
-
-            addUserToFollowed({ [id.value]: name.value });
-          }}
-          id={userDataChecked.userUUID}
-          name={userDataChecked.userName}
-        >
-          Follow
-
-        </button>
+        {renderFollowBtn()}
       </div>
       <div className="user-card-content">
         <p>
