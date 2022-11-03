@@ -35,7 +35,7 @@ function mergePosts(postsList) {
 }
 
 function Home({
-  loadUserData, loadUserFollow, loadUserPost, sortPosts, addFollow,
+  loadUserData, loadUserFollow, loadUserPost, sortPosts, addFollow, addLike,
 }) {
   const { param } = useParams();
   const getContext = useContext(UserDataContext);
@@ -203,8 +203,11 @@ function Home({
         homeDbPost.map((postId) => (
           <Post
             postData={postId[1]}
-            userData={homeDbUser[postId[1].authorUUID]}
+            authorData={homeDbUser[postId[1].authorUUID]}
             key={postId[0]}
+            handlePostLike={() => {
+              addLike(postId[0], postId[1].authorUUID);
+            }}
           />
         ))
       );

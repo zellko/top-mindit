@@ -72,3 +72,21 @@
     background-color: var(--color-grey);
     opacity: 0.9;
 }
+
+.post-content-social{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.social-like, .social-comment, .social-share{
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.post-content-social button{
+    border: 0;
+    background: 0;
+}

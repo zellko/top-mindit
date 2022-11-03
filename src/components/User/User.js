@@ -7,7 +7,7 @@ import './User.css';
 import Post from '../Post/Post';
 
 function User({
-  loadUserData, loadUserPost, loadUserList, writePostToDb, sortPosts, addFollow,
+  loadUserData, loadUserPost, loadUserList, writePostToDb, sortPosts, addFollow, addLike,
 }) {
   const params = useParams();
   const data = useLocation();
@@ -117,8 +117,11 @@ function User({
         userDbPost.map((postId) => (
           <Post
             postData={postId[1]}
-            userData={userDbData}
+            authorData={userDbData}
             key={postId[0]}
+            handlePostLike={() => {
+              addLike(postId[0], postId[1].authorUUID);
+            }}
           />
         ))
       );

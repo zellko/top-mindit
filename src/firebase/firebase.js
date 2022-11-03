@@ -136,7 +136,6 @@ const updateDb = (() => {
       updates[`/comments/${postId}/${commentId}`] = data;
       updates[`/comments/${postId}/${commentId}`].commentTimestamp = dbData[commentId].commentTimestamp; // Keep timestamp
 
-      console.log(updates);
       return update(ref(db), updates);
     }
 
@@ -167,7 +166,7 @@ const updateDb = (() => {
       return update(ref(db), updates);
     }
 
-    // Else, add it to DB
+    // Else, add it to DBlikeArray
     dbData[key] = follow[1];
     updates[`/${type}/${uuid}/`] = dbData;
     return update(ref(db), updates);
@@ -187,8 +186,37 @@ const updateDb = (() => {
     return update(ref(db), updates);
   };
 
+  const updateLike = async (postId, authorUUID, userUUID) => {
+    // Fetch data from DB
+    const dbData = await readDb(`posts/${authorUUID}/${postId}`, 'like');
+    const updates = {};
+
+    // Check that DB is containing a post with corresponding to postId
+    if (dbData.includes(String(userUUID))) {
+      console.log('Post already liked by this user');
+
+      // If yes, remove it from DB.
+      const dbDataCopy = [...dbData];
+      const indexUserUUID = dbDataCopy.indexOf(userUUID);
+      dbDataCopy.splice(indexUserUUID, 1);
+      updates[`/posts/${authorUUID}/${postId}/like`] = dbDataCopy;
+      return update(ref(db), updates);
+    }
+
+    if (dbData === 'No data available') {
+      updates[`/posts/${authorUUID}/${postId}/like`] = [userUUID];
+      return update(ref(db), updates);
+    }
+
+    const dbDataCopy = [...dbData];
+    dbDataCopy.push(userUUID);
+
+    updates[`/posts/${authorUUID}/${postId}/like`] = dbDataCopy;
+    return update(ref(db), updates);
+  };
+
   return {
-    updatePost, updateComment, updateFollow, updateUsersList,
+    updatePost, updateComment, updateFollow, updateUsersList, updateLike,
   };
 })();
 

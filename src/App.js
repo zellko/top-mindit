@@ -225,6 +225,12 @@ function App() {
                   return dbData;
                 }}
                 sortPosts={sortPosts}
+                addLike={(postid, authorUUID) => {
+                  updateDb.updateLike(postid, authorUUID, userData.userUUID);
+                  // Refresh state in order to "refresh" page so the new post created appear
+                  const n = dbUpdate;
+                  setDbUpdate(n + 1);
+                }}
               />
 )}
           />
@@ -248,6 +254,12 @@ function App() {
                 userFollow={userFollow}
                 addFollow={(uuid, data, dbName) => {
                   updateDb.updateFollow(uuid, data, dbName);
+                  // Refresh state in order to "refresh" page so the new post created appear
+                  const n = dbUpdate;
+                  setDbUpdate(n + 1);
+                }}
+                addLike={(postid, authorUUID) => {
+                  updateDb.updateLike(postid, authorUUID, userData.userUUID);
                   // Refresh state in order to "refresh" page so the new post created appear
                   const n = dbUpdate;
                   setDbUpdate(n + 1);
@@ -282,6 +294,12 @@ function App() {
                 sortPosts={sortPosts}
                 addFollow={(uuid, followData, dbName) => {
                   updateDb.updateFollow(uuid, followData, dbName);
+                  // Refresh state in order to "refresh" page so the new post created appear
+                  const n = dbUpdate;
+                  setDbUpdate(n + 1);
+                }}
+                addLike={(postid, authorUUID) => {
+                  updateDb.updateLike(postid, authorUUID, userData.userUUID);
                   // Refresh state in order to "refresh" page so the new post created appear
                   const n = dbUpdate;
                   setDbUpdate(n + 1);
