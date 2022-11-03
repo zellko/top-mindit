@@ -8,6 +8,7 @@ import {
 import Header from './components/Header/Header';
 import Home from './components/Home/Home';
 import User from './components/User/User';
+import Comments from './components/Comments/Comments';
 import './App.css';
 import {
   readDb, writeDb, updateDb, signIn, signOutUser, isUserLoggedIn,
@@ -267,8 +268,6 @@ function App() {
               />
 )}
           />
-          {' '}
-          {/* TBD, Change component Home.js -> General.js  ? */}
           <Route
             path="/user/:id"
             element={(
@@ -305,6 +304,13 @@ function App() {
                   setDbUpdate(n + 1);
                 }}
               />
+)}
+          />
+
+          <Route
+            path="/comments/:postid"
+            element={(
+              <Comments />
 )}
           />
         </Routes>

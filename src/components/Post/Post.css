@@ -90,3 +90,7 @@
     border: 0;
     background: 0;
 }
+
+.post-content-social button:hover{
+    background-color: var(--color-card-bg-clear);
+}
