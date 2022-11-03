@@ -1,0 +1,23 @@
+.create-comment{
+    flex: 1;
+    padding:  8px 16px;
+}
+
+.create-comment textarea{
+    background-color: var(--color-card-bg-clear);
+    color: var(--color-grey);
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    width: 100%;
+    padding:  0 16px;
+    margin-bottom: 8px;
+}
+
+.create-comment textarea:hover{
+    background-color: var(--color-card-bg);
+    border: 1px solid var(--color-grey);
+}
+
+.create-comment button{
+    margin-left: auto;
+}

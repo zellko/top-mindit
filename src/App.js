@@ -310,7 +310,15 @@ function App() {
           <Route
             path="/comments/:postid"
             element={(
-              <Comments />
+              <Comments
+                writeCommentToDb={(postId, authorUUID, commentData) => {
+                  updateDb.updateComment(postId, authorUUID, commentData);
+
+                  // Refresh state in order to "refresh" page so the new post created appear
+                  const n = dbUpdate;
+                  setDbUpdate(n + 1);
+                }}
+              />
 )}
           />
         </Routes>

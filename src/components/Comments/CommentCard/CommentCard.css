@@ -1,0 +1,35 @@
+.comment-card{
+    padding: 16px 16px 0 16px;
+    display: flex;
+    gap: 8px;
+}
+
+.comment-card-toggle{
+    border-left: 1px solid var(--color-grey);
+    opacity: 0.3;
+    margin: 24px 4px 0 4px;
+    padding: 0 4px;
+}
+
+.comment-card-toggle:hover{
+    opacity: 0.8;
+    cursor: pointer;
+}
+
+.comment-card-content{
+    flex: 1;
+}
+
+.comment-card-header{
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+}
+
+.comment-card-header span{
+    font-size: 0.7rem;
+}
+
+.comment-card-text{
+    margin-left: 16px;
+}

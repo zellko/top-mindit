@@ -119,28 +119,26 @@ const updateDb = (() => {
     return 'Error: post not found';
   };
 
-  const updateComment = async (data) => {
-    // Get post ID / user uuid
-    const { postId, commentId } = data;
+  const updateComment = async (postId, authorUUID, data) => {
+    // // Fetch data from DB
+    const dbData = await readDb(`posts/${authorUUID}/${postId}`, 'comments');
+    const updates = {};
 
-    // Fetch data from DB
-    const dbData = await readDb('comments', postId);
+    // Get Timestamp and add it to data
+    const timestamp = Date.now();
+    const commentData = data;
+    commentData.timestamp = timestamp;
 
-    if (typeof (dbData) !== 'object') {
-      console.log('Error: Comment not found');
-      return 'Error: Comment not found';
-    }
-
-    if (dbData[commentId].commentId === commentId) {
-      const updates = {};
-      updates[`/comments/${postId}/${commentId}`] = data;
-      updates[`/comments/${postId}/${commentId}`].commentTimestamp = dbData[commentId].commentTimestamp; // Keep timestamp
-
+    if (dbData === 'No data available') {
+      updates[`/posts/${authorUUID}/${postId}/comments`] = [commentData];
       return update(ref(db), updates);
     }
 
-    console.log('Error: Comment not found');
-    return 'Error: Comment not found';
+    const dbDataCopy = [...dbData];
+    dbDataCopy.push(commentData);
+    updates[`/posts/${authorUUID}/${postId}/comments`] = dbDataCopy;
+
+    return update(ref(db), updates);
   };
 
   const updateFollow = async (uuid, follow, type) => {
