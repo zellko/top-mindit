@@ -17,11 +17,6 @@ const undefinedUserdata = {
 };
 
 function Post({ postData, authorData, handlePostLike }) {
-  let topicArray;
-  if (postData) {
-    topicArray = postData.topics;
-  }
-  // const topicArray = postData.topics;
   let userDataChecked = authorData;
   const getContext = useContext(UserDataContext);
   const { userData, userFollow } = getContext;
@@ -84,6 +79,14 @@ function Post({ postData, authorData, handlePostLike }) {
     return 0;
   }
 
+  function countReply() {
+    if (postData.comments) {
+      return postData.comments.length;
+    }
+
+    return 0;
+  }
+
   function isPostLiked() {
     if (postData.like) {
       if (postData.like.includes(userData.userUUID)) {
@@ -98,6 +101,11 @@ function Post({ postData, authorData, handlePostLike }) {
     if (!postData) {
       return null;
     }
+
+    if (!postData.topics) {
+      return null;
+    }
+
     return (
       <div className="post">
         <div className="post-sidebar">
@@ -107,7 +115,7 @@ function Post({ postData, authorData, handlePostLike }) {
           <div className="post-content-top">
             {postData.title}
             {
-            topicArray.map((topic) => (
+            postData.topics.map((topic) => (
               <Pill text={topic} pillColor="rgb(241 172 174)" key={topic} />
             ))
           }
@@ -142,7 +150,7 @@ function Post({ postData, authorData, handlePostLike }) {
               <button type="button" onClick={handleComment}>
                 <img src={imgComment} alt="Comment post" />
               </button>
-              <p>3</p>
+              <p>{countReply()}</p>
             </div>
             <div className="social-share">
               <button type="button">
