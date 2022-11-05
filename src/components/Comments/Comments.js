@@ -7,11 +7,14 @@ import './Comments.css';
 
 function Comments({ writeCommentToDb }) {
   const params = useParams();
-  console.log(params);
   const data = useLocation();
-  console.log(data.state);
 
-  const [postContentData, setPostContentData] = useState();
+  const [postContentData, setPostContentData] = useState(
+    // Set state with an object with "comments" keys, create an empty array to avoid error
+    {
+      comments: [],
+    },
+  );
   const [authorData, setAuthorData] = useState();
 
   // componentDidMount/ update
@@ -20,41 +23,23 @@ function Comments({ writeCommentToDb }) {
 
     // if data are provided, set postData
     if (data.state) {
-      setPostContentData(data.state.postContent);
+      const postData = data.state.postContent;
+
+      // In case postData object has no "comments" keys, create an empty array to avoid error
+      if (postData.comments === undefined) {
+        postData.comments = [];
+      }
+
+      setPostContentData(postData);
       setAuthorData(data.state.author);
     }
+
     // ... else fetch post data from DB
     // ... and fetch user data from DB
-  }, [postContentData]);
-
-  function renderPostReply() {
-    console.log(postContentData);
-
-    if (postContentData === undefined) return null;
-    if (!postContentData.comments) {
-      return (
-        <div className="no-comment-message">
-          <p>No comment for now!</p>
-          <p>Be the first one to share what you think!</p>
-        </div>
-      );
-    }
-
-    if (postContentData.comments.length > 0) {
-      return (
-        postContentData.comments.map((commentData) => (
-          <CommentCard
-            key={commentData.commentId}
-            data={commentData}
-          />
-        ))
-      );
-    }
-
-    return null;
-  }
+  }, []);
 
   return (
+
     <div className="comments">
       <Post
         postData={postContentData}
@@ -70,8 +55,53 @@ function Comments({ writeCommentToDb }) {
             );
           }}
         />
-        {renderPostReply()}
 
+        { postContentData.comments.map((commentData) => {
+          function isReply(replyData) {
+            // This recursive function, check if the "CommentCard" being rendered has reply
+
+            // Filter all the comments to find the one who are responding...
+            // ...to the "CommentCard" being rendered now
+            const commentReply = postContentData.comments.filter((a) => {
+              if (a.replyTo !== undefined) {
+                if (a.replyTo === replyData.commentId) { return a; }
+              }
+            });
+
+            // If there is one or more reply...
+            if (commentReply.length > 0) {
+              return (
+                commentReply.map((reply) => (
+                  // For each reply...
+                  // ... render a nested "CommentCard"
+                  <div className="comment-reply" key={reply.commentId}>
+                    <CommentCard
+                      key={reply.commentId}
+                      data={reply}
+                    />
+                    {/* ... recall isReply function to check if this reply has reply */}
+                    {isReply(reply)}
+                  </div>
+                ))
+              );
+            }
+          }
+
+          // If the comment is not a reply to another comment...
+          if (!commentData.replyTo) {
+            return (
+            // ... render a "CommentCard"
+              <div className="reply-container" key={commentData.commentId}>
+                <CommentCard
+                  key={commentData.commentId}
+                  data={commentData}
+                />
+                {/* ...Call isReply function to check if this comment as reply */}
+                {isReply(commentData)}
+              </div>
+            );
+          }
+        })}
       </div>
       Comments.js
       <br />
