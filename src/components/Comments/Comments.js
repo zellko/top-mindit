@@ -75,6 +75,7 @@ function Comments({ writeCommentToDb }) {
                   // For each reply...
                   // ... render a nested "CommentCard"
                   <div className="comment-reply" key={reply.commentId}>
+                    <div className="reply-side-bar" />
                     <CommentCard
                       key={reply.commentId}
                       data={reply}
@@ -99,6 +100,7 @@ function Comments({ writeCommentToDb }) {
             return (
             // ... render a "CommentCard"
               <div className="reply-container" key={commentData.commentId}>
+                <div className="reply-side-bar" />
                 <CommentCard
                   key={commentData.commentId}
                   data={commentData}

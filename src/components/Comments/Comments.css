@@ -26,8 +26,23 @@
 }
 
 .comment-reply{
-    background-color: rgba(56, 8, 8, 0.308);
+    position: relative;
+    background-color: rgba(3, 3, 3, 0.20);
+    border-radius: 4px;
     margin-left: 5vw;
 }
 
+.reply-container{
+    position: relative;
+}
+
+.reply-side-bar{
+    position: absolute;
+    left: 2px;
+    top: 42px;
+    height: calc(100% - 42px);
+    border-left: 2px solid var(--color-pink);
+    opacity: 0.2;
+    padding: 0 4px;
+}
 
