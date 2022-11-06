@@ -78,6 +78,13 @@ function Comments({ writeCommentToDb }) {
                     <CommentCard
                       key={reply.commentId}
                       data={reply}
+                      addReplyToDb={(formReplyData) => {
+                        writeCommentToDb(
+                          postContentData.postId,
+                          postContentData.authorUUID,
+                          formReplyData,
+                        );
+                      }}
                     />
                     {/* ... recall isReply function to check if this reply has reply */}
                     {isReply(reply)}
@@ -95,6 +102,13 @@ function Comments({ writeCommentToDb }) {
                 <CommentCard
                   key={commentData.commentId}
                   data={commentData}
+                  addReplyToDb={(formReplyData) => {
+                    writeCommentToDb(
+                      postContentData.postId,
+                      postContentData.authorUUID,
+                      formReplyData,
+                    );
+                  }}
                 />
                 {/* ...Call isReply function to check if this comment as reply */}
                 {isReply(commentData)}
