@@ -130,12 +130,12 @@ const updateDb = (() => {
     commentData.timestamp = timestamp;
 
     if (dbData === 'No data available') {
-      updates[`/posts/${authorUUID}/${postId}/comments`] = [commentData];
+      updates[`/posts/${authorUUID}/${postId}/comments`] = { [commentData.commentId]: commentData };
       return update(ref(db), updates);
     }
 
-    const dbDataCopy = [...dbData];
-    dbDataCopy.push(commentData);
+    const dbDataCopy = { ...dbData };
+    dbDataCopy[commentData.commentId] = commentData;
     updates[`/posts/${authorUUID}/${postId}/comments`] = dbDataCopy;
 
     return update(ref(db), updates);

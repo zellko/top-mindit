@@ -81,7 +81,8 @@ function Post({ postData, authorData, handlePostLike }) {
 
   function countReply() {
     if (postData.comments) {
-      return postData.comments.length;
+      const commentsObjectKey = Object.keys(postData.comments);
+      return commentsObjectKey.length;
     }
 
     return 0;

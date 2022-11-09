@@ -5,6 +5,20 @@ import CreateComment from './CreateComment/CreateComment';
 import CommentCard from './CommentCard/CommentCard';
 import './Comments.css';
 
+function convertObjectToArray(commentsObject) {
+  const array = [];
+  const objectKeys = Object.keys(commentsObject);
+  console.log(objectKeys);
+
+  for (let index = 0; index < objectKeys.length; index++) {
+    const key = objectKeys[index];
+
+    console.log(key);
+    array.push(commentsObject[key]);
+  }
+  return array;
+}
+
 function Comments({ writeCommentToDb }) {
   const params = useParams();
   const data = useLocation();
@@ -24,12 +38,15 @@ function Comments({ writeCommentToDb }) {
     // if data are provided, set postData
     if (data.state) {
       const postData = data.state.postContent;
+      console.log(postData);
 
       // In case postData object has no "comments" keys, create an empty array to avoid error
       if (postData.comments === undefined) {
         postData.comments = [];
       }
 
+      const commentsToArray = convertObjectToArray(postData.comments);
+      postData.comments = commentsToArray;
       setPostContentData(postData);
       setAuthorData(data.state.author);
     }
