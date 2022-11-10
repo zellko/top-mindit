@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { useParams, useLocation, Link } from 'react-router-dom';
+import { UserDataContext } from '../../UserDataContext';
 import Post from '../Post/Post';
 import CreateComment from './CreateComment/CreateComment';
 import CommentCard from './CommentCard/CommentCard';
@@ -8,20 +9,19 @@ import './Comments.css';
 function convertObjectToArray(commentsObject) {
   const array = [];
   const objectKeys = Object.keys(commentsObject);
-  console.log(objectKeys);
 
   for (let index = 0; index < objectKeys.length; index++) {
     const key = objectKeys[index];
-
-    console.log(key);
     array.push(commentsObject[key]);
   }
   return array;
 }
 
-function Comments({ writeCommentToDb }) {
+function Comments({ writeCommentToDb, writeLikeToDb, writePostLikeToDb }) {
   const params = useParams();
   const data = useLocation();
+  const getContext = useContext(UserDataContext);
+  const { userData, userFollow } = getContext;
 
   const [postContentData, setPostContentData] = useState(
     // Set state with an object with "comments" keys, create an empty array to avoid error
@@ -61,6 +61,9 @@ function Comments({ writeCommentToDb }) {
       <Post
         postData={postContentData}
         authorData={authorData}
+        handlePostLike={() => {
+          writePostLikeToDb(postContentData.postId, postContentData.authorUUID);
+        }}
       />
       <div className="comments-area">
         <CreateComment
@@ -103,6 +106,14 @@ function Comments({ writeCommentToDb }) {
                           formReplyData,
                         );
                       }}
+                      addLikeToDb={() => {
+                        console.log('fddsfsd');
+                        writeLikeToDb(
+                          postContentData.postId,
+                          postContentData.authorUUID,
+                          reply.commentId,
+                        );
+                      }}
                     />
                     {/* ... recall isReply function to check if this reply has reply */}
                     {isReply(reply)}
@@ -126,6 +137,14 @@ function Comments({ writeCommentToDb }) {
                       postContentData.postId,
                       postContentData.authorUUID,
                       formReplyData,
+                    );
+                  }}
+                  addLikeToDb={() => {
+                    console.log('fddsfsd');
+                    writeLikeToDb(
+                      postContentData.postId,
+                      postContentData.authorUUID,
+                      commentData.commentId,
                     );
                   }}
                 />

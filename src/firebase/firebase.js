@@ -213,8 +213,38 @@ const updateDb = (() => {
     return update(ref(db), updates);
   };
 
+  const updateCommentLike = async (postId, authorUUID, userUUID, commentId) => {
+    // Fetch data from DB
+    const dbData = await readDb(`posts/${authorUUID}/${postId}/comments/${commentId}`, 'like');
+    const updates = {};
+    console.log(dbData);
+
+    // Check that DB is containing a post with corresponding to postId
+    if (dbData.includes(String(userUUID))) {
+      console.log('Post already liked by this user');
+
+      // If yes, remove it from DB.
+      const dbDataCopy = [...dbData];
+      const indexUserUUID = dbDataCopy.indexOf(userUUID);
+      dbDataCopy.splice(indexUserUUID, 1);
+      updates[`/posts/${authorUUID}/${postId}/comments/${commentId}/like`] = dbDataCopy;
+      return update(ref(db), updates);
+    }
+
+    if (dbData === 'No data available') {
+      updates[`/posts/${authorUUID}/${postId}/comments/${commentId}/like`] = [userUUID];
+      return update(ref(db), updates);
+    }
+
+    const dbDataCopy = [...dbData];
+    dbDataCopy.push(userUUID);
+
+    updates[`/posts/${authorUUID}/${postId}/comments/${commentId}/like`] = dbDataCopy;
+    return update(ref(db), updates);
+  };
+
   return {
-    updatePost, updateComment, updateFollow, updateUsersList, updateLike,
+    updatePost, updateComment, updateFollow, updateUsersList, updateLike, updateCommentLike,
   };
 })();
 

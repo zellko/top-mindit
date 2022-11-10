@@ -318,6 +318,18 @@ function App() {
                   const n = dbUpdate;
                   setDbUpdate(n + 1);
                 }}
+                writeLikeToDb={(postid, authorUUID, commentId) => {
+                  updateDb.updateCommentLike(postid, authorUUID, userData.userUUID, commentId);
+                  // Refresh state in order to "refresh" page so the new post created appear
+                  const n = dbUpdate;
+                  setDbUpdate(n + 1);
+                }}
+                writePostLikeToDb={(postid, authorUUID) => {
+                  updateDb.updateLike(postid, authorUUID, userData.userUUID);
+                  // Refresh state in order to "refresh" page so the new post created appear
+                  const n = dbUpdate;
+                  setDbUpdate(n + 1);
+                }}
               />
 )}
           />
