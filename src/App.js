@@ -330,6 +330,14 @@ function App() {
                   const n = dbUpdate;
                   setDbUpdate(n + 1);
                 }}
+                loadUserData={async (uuid) => {
+                  const dbData = await readDb('users', uuid);
+                  return dbData;
+                }}
+                loadAllPost={async () => {
+                  const dbData = await readDb('posts', '');
+                  return dbData;
+                }}
               />
 )}
           />

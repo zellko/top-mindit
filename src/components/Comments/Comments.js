@@ -17,7 +17,9 @@ function convertObjectToArray(commentsObject) {
   return array;
 }
 
-function Comments({ writeCommentToDb, writeLikeToDb, writePostLikeToDb }) {
+function Comments({
+  writeCommentToDb, writeLikeToDb, writePostLikeToDb, loadAllPost, loadUserData,
+}) {
   const params = useParams();
   const data = useLocation();
   const getContext = useContext(UserDataContext);
@@ -33,12 +35,9 @@ function Comments({ writeCommentToDb, writeLikeToDb, writePostLikeToDb }) {
 
   // componentDidMount/ update
   useEffect(() => {
-    console.log('render');
-
     // if data are provided, set postData
     if (data.state) {
       const postData = data.state.postContent;
-      console.log(postData);
 
       // In case postData object has no "comments" keys, create an empty array to avoid error
       if (postData.comments === undefined) {
@@ -52,8 +51,89 @@ function Comments({ writeCommentToDb, writeLikeToDb, writePostLikeToDb }) {
     }
 
     // ... else fetch post data from DB
+    async function dbLoadAuthorData(authorUUID) {
+      const dbData = await loadUserData(authorUUID);
+      setAuthorData(dbData);
+    }
+
+    async function dbLoadAllPost() {
+      // Load all posts for database
+      const dbData = await loadAllPost();
+      const dbEntries = Object.entries(dbData);
+
+      for (let index = 0; index < dbEntries.length; index++) {
+        // Extract all post from each users
+        const element = dbEntries[index];
+        const elementEntries = Object.entries(element[1]);
+
+        // ... and for each post, check if post ID match params
+        for (let i = 0; i < elementEntries.length; i++) {
+          const postId = elementEntries[i];
+
+          if (params.postid === String(postId[0])) {
+            // ... if a post from database match params...
+
+            // ...In case postData object has no "comments" keys, ...
+            // ... create an empty array to avoid error
+            if (postId[1].comments === undefined) {
+              postId[1].comments = [];
+            }
+
+            const commentsToArray = convertObjectToArray(postId[1].comments);
+            postId[1].comments = commentsToArray;
+
+            // ... set state with post data
+            setPostContentData(postId[1]);
+
+            // ...fetch post author data
+            dbLoadAuthorData(postId[1].authorUUID);
+          }
+        }
+      }
+      return dbData;
+    }
+
+    dbLoadAllPost();
+
     // ... and fetch user data from DB
-  }, []);
+  }, [userData]);
+
+  function isComment() {
+    if (postContentData.comments.length === 0 && postContentData.postId) {
+      return (
+        <div className="no-data">
+          <p>No comments yet</p>
+          <br />
+          <p>Be the first to share what you think!</p>
+        </div>
+      );
+    }
+    return null;
+  }
+
+  function isPostFound() {
+    if (postContentData.postId) {
+      return (
+        <CreateComment
+          addCommentToDb={(commentData) => {
+            if (postContentData.postId === undefined) return;
+
+            writeCommentToDb(
+              postContentData.postId,
+              postContentData.authorUUID,
+              commentData,
+            );
+          }}
+        />
+      );
+    }
+
+    return (
+      <div className="no-data">
+        <p>No post found</p>
+      </div>
+    );
+  }
 
   return (
 
@@ -66,16 +146,10 @@ function Comments({ writeCommentToDb, writeLikeToDb, writePostLikeToDb }) {
         }}
       />
       <div className="comments-area">
-        <CreateComment
-          addCommentToDb={(commentData) => {
-            writeCommentToDb(
-              postContentData.postId,
-              postContentData.authorUUID,
-              commentData,
-            );
-          }}
-        />
 
+        {isPostFound()}
+
+        {isComment()}
         { postContentData.comments.map((commentData) => {
           function isReply(replyData) {
             // This recursive function, check if the "CommentCard" being rendered has reply
@@ -107,7 +181,6 @@ function Comments({ writeCommentToDb, writeLikeToDb, writePostLikeToDb }) {
                         );
                       }}
                       addLikeToDb={() => {
-                        console.log('fddsfsd');
                         writeLikeToDb(
                           postContentData.postId,
                           postContentData.authorUUID,
@@ -140,7 +213,6 @@ function Comments({ writeCommentToDb, writeLikeToDb, writePostLikeToDb }) {
                     );
                   }}
                   addLikeToDb={() => {
-                    console.log('fddsfsd');
                     writeLikeToDb(
                       postContentData.postId,
                       postContentData.authorUUID,
