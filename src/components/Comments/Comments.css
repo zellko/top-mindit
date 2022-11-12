@@ -46,3 +46,9 @@
     padding: 0 4px;
 }
 
+.deleted-comment{
+    padding: 16px 16px 0 16px;
+    font-style: italic;
+    font-size: 0.85rem;
+    font-weight: 700;
+}

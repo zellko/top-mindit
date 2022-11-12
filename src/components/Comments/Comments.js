@@ -203,6 +203,52 @@ function Comments({
           // ToDo, If a comment reply do not correspond to any comment Id
           // ... it's mean that the comment has been deleted,
           // ... so the comment should be displayed in a special way to handle this case
+          // console.log(postContentData.comments);
+          // console.log(commentData);
+          const commentIdArray = [];
+
+          for (let index = 0; index < postContentData.comments.length; index++) {
+            const element = postContentData.comments[index];
+            commentIdArray.push(element.commentId);
+          }
+
+          if (!commentIdArray.includes(commentData.replyTo) && commentData.replyTo) {
+            console.log('Comment reply has been deleted');
+            return (
+            // ... render a "CommentCard"
+              <div className="reply-container" key={commentData.commentId}>
+                <div className="reply-side-bar" />
+                <p className="deleted-comment">Comment has been deleted</p>
+                <div className="comment-reply">
+                  <div className="reply-side-bar" />
+                  <CommentCard
+                    key={commentData.commentId}
+                    data={commentData}
+                    addReplyToDb={(formReplyData) => {
+                      writeCommentToDb(
+                        postContentData.postId,
+                        postContentData.authorUUID,
+                        formReplyData,
+                      );
+                    }}
+                    addLikeToDb={() => {
+                      writeLikeToDb(
+                        postContentData.postId,
+                        postContentData.authorUUID,
+                        commentData.commentId,
+                      );
+                    }}
+                    deleteComment={(commentId) => {
+                      const path = `/posts/${postContentData.authorUUID}/${postContentData.postId}/comments`;
+                      deleteData(path, commentId);
+                    }}
+                  />
+                  {/* ...Call isReply function to check if this comment as reply */}
+                  {isReply(commentData)}
+                </div>
+              </div>
+            );
+          }
 
           // If the comment is not a reply to another comment...
           if (!commentData.replyTo) {
