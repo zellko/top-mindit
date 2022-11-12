@@ -4,7 +4,9 @@ import { UserDataContext } from '../../../UserDataContext';
 import './CommentCard.css';
 import imgComment from '../../../img/comment.png';
 
-function CommentCard({ data, addReplyToDb, addLikeToDb }) {
+function CommentCard({
+  data, addReplyToDb, addLikeToDb, deleteComment,
+}) {
   const [showCommentForm, setShowCommentForm] = useState(false);
   const getContext = useContext(UserDataContext);
   const { userData, userFollow } = getContext;
@@ -91,6 +93,18 @@ function CommentCard({ data, addReplyToDb, addLikeToDb }) {
           </div>
         </div>
       </div>
+
+      {(userData.userUUID === data.authorUUID)
+        ? (
+          <button
+            className="button-delete"
+            type="button"
+            onClick={() => deleteComment(data.commentId)}
+          >
+            ✕
+          </button>
+        )
+        : null}
 
       {showCommentForm ? (
         <CreateComment

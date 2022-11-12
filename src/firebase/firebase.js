@@ -36,6 +36,21 @@ function readDb(dbName, id) {
   });
 }
 
+async function deleteDbData(path, id) {
+  // Get post ID / user uuid
+
+  // Fetch data from DB
+  const dbData = await readDb(path, '');
+
+  // Delete the element id
+  delete dbData[id];
+
+  // update the db without the element
+  const updates = {};
+  updates[path] = dbData;
+  return update(ref(db), updates);
+}
+
 const writeDb = (() => {
   const writeUser = (data) => {
     const { userUUID } = data; // Get user ID number (UUID)
@@ -304,5 +319,5 @@ function isUserLoggedIn() {
 }
 
 export {
-  readDb, writeDb, updateDb, signIn, signOutUser, isUserLoggedIn,
+  readDb, writeDb, updateDb, signIn, signOutUser, isUserLoggedIn, deleteDbData,
 };

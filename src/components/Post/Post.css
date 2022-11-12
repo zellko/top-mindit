@@ -1,4 +1,5 @@
 .post{
+    position: relative;
     display: flex;
     background-color: var(--color-card-bg);
     border-radius: 4px;

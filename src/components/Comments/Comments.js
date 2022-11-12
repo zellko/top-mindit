@@ -18,7 +18,7 @@ function convertObjectToArray(commentsObject) {
 }
 
 function Comments({
-  writeCommentToDb, writeLikeToDb, writePostLikeToDb, loadAllPost, loadUserData,
+  writeCommentToDb, writeLikeToDb, writePostLikeToDb, loadAllPost, loadUserData, deleteData,
 }) {
   const params = useParams();
   const data = useLocation();
@@ -187,6 +187,10 @@ function Comments({
                           reply.commentId,
                         );
                       }}
+                      deleteComment={(commentId) => {
+                        const path = `/posts/${postContentData.authorUUID}/${postContentData.postId}/comments`;
+                        deleteData(path, commentId);
+                      }}
                     />
                     {/* ... recall isReply function to check if this reply has reply */}
                     {isReply(reply)}
@@ -195,6 +199,10 @@ function Comments({
               );
             }
           }
+
+          // ToDo, If a comment reply do not correspond to any comment Id
+          // ... it's mean that the comment has been deleted,
+          // ... so the comment should be displayed in a special way to handle this case
 
           // If the comment is not a reply to another comment...
           if (!commentData.replyTo) {
@@ -218,6 +226,10 @@ function Comments({
                       postContentData.authorUUID,
                       commentData.commentId,
                     );
+                  }}
+                  deleteComment={(commentId) => {
+                    const path = `/posts/${postContentData.authorUUID}/${postContentData.postId}/comments`;
+                    deleteData(path, commentId);
                   }}
                 />
                 {/* ...Call isReply function to check if this comment as reply */}

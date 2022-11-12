@@ -11,7 +11,7 @@ import User from './components/User/User';
 import Comments from './components/Comments/Comments';
 import './App.css';
 import {
-  readDb, writeDb, updateDb, signIn, signOutUser, isUserLoggedIn,
+  readDb, writeDb, updateDb, signIn, signOutUser, isUserLoggedIn, deleteDbData,
 } from './firebase/firebase';
 import { UserDataContext } from './UserDataContext';
 
@@ -232,6 +232,14 @@ function App() {
                   const n = dbUpdate;
                   setDbUpdate(n + 1);
                 }}
+                deleteData={
+                  async (path, id) => {
+                    deleteDbData(path, id);
+                    // Refresh state in order to "refresh" page so the new post created appear
+                    const n = dbUpdate;
+                    setDbUpdate(n + 1);
+                  }
+                }
               />
 )}
           />
@@ -265,6 +273,14 @@ function App() {
                   const n = dbUpdate;
                   setDbUpdate(n + 1);
                 }}
+                deleteData={
+                  async (path, id) => {
+                    deleteDbData(path, id);
+                    // Refresh state in order to "refresh" page so the new post created appear
+                    const n = dbUpdate;
+                    setDbUpdate(n + 1);
+                  }
+                }
               />
 )}
           />
@@ -303,6 +319,14 @@ function App() {
                   const n = dbUpdate;
                   setDbUpdate(n + 1);
                 }}
+                deleteData={
+                  async (path, id) => {
+                    deleteDbData(path, id);
+                    // Refresh state in order to "refresh" page so the new post created appear
+                    const n = dbUpdate;
+                    setDbUpdate(n + 1);
+                  }
+                }
               />
 )}
           />
@@ -338,6 +362,14 @@ function App() {
                   const dbData = await readDb('posts', '');
                   return dbData;
                 }}
+                deleteData={
+                  async (path, id) => {
+                    deleteDbData(path, id);
+                    // Refresh state in order to "refresh" page so the new post created appear
+                    const n = dbUpdate;
+                    setDbUpdate(n + 1);
+                  }
+                }
               />
 )}
           />

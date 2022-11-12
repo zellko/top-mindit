@@ -35,7 +35,7 @@ function mergePosts(postsList) {
 }
 
 function Home({
-  loadUserData, loadUserFollow, loadUserPost, sortPosts, addFollow, addLike,
+  loadUserData, loadUserFollow, loadUserPost, sortPosts, addFollow, addLike, deleteData,
 }) {
   const { param } = useParams();
   const getContext = useContext(UserDataContext);
@@ -82,7 +82,6 @@ function Home({
       const mergedPostsData = mergePosts(postsArray);
 
       const sortedPost = sortPosts.newest(mergedPostsData); // Sort posts by time
-      console.log(sortedPost);
       setHomeDbPost(sortedPost);
     }
 
@@ -92,10 +91,8 @@ function Home({
 
       if (dbData === 'No data available') {
         console.log('No data available ');
-        console.log(dbData);
       }
 
-      console.log(dbData);
       setHomeDbUser(dbData);
     }
 
@@ -136,7 +133,6 @@ function Home({
       const mergedPostsData = mergePosts(allResultsPosts);
 
       const sortedPost = sortPosts.newest(mergedPostsData); // Sort posts by time
-      console.log(sortedPost);
       setHomeDbPost(sortedPost);
     }
 
@@ -207,6 +203,10 @@ function Home({
             key={postId[0]}
             handlePostLike={() => {
               addLike(postId[0], postId[1].authorUUID);
+            }}
+            deletePost={() => {
+              const path = `/posts/${postId[1].authorUUID}/`;
+              deleteData(path, postId[1].postId);
             }}
           />
         ))

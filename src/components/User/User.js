@@ -7,7 +7,7 @@ import './User.css';
 import Post from '../Post/Post';
 
 function User({
-  loadUserData, loadUserPost, loadUserList, writePostToDb, sortPosts, addFollow, addLike,
+  loadUserData, loadUserPost, loadUserList, writePostToDb, sortPosts, addFollow, addLike, deleteData,
 }) {
   const params = useParams();
   const data = useLocation();
@@ -121,6 +121,10 @@ function User({
             key={postId[0]}
             handlePostLike={() => {
               addLike(postId[0], postId[1].authorUUID);
+            }}
+            deletePost={() => {
+              const path = `/posts/${postId[1].authorUUID}/`;
+              deleteData(path, postId[1].postId);
             }}
           />
         ))

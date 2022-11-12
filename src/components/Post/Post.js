@@ -16,7 +16,9 @@ const undefinedUserdata = {
   userprofilePicture: defaultProfileImg,
 };
 
-function Post({ postData, authorData, handlePostLike }) {
+function Post({
+  postData, authorData, handlePostLike, deletePost,
+}) {
   let userDataChecked = authorData;
   const getContext = useContext(UserDataContext);
   const { userData, userFollow } = getContext;
@@ -160,6 +162,18 @@ function Post({ postData, authorData, handlePostLike }) {
             </div>
           </div>
         </div>
+
+        {(userData.userUUID === postData.authorUUID)
+          ? (
+            <button
+              className="button-delete"
+              type="button"
+              onClick={() => deletePost(postData.commentId)}
+            >
+              ✕
+            </button>
+          )
+          : null}
       </div>
     );
   }
