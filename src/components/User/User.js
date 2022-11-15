@@ -3,11 +3,14 @@ import { useParams, useLocation, Link } from 'react-router-dom';
 import { UserDataContext } from '../../UserDataContext';
 import UserIntro from './UserIntro/UserIntro';
 import CreatePost from '../CreatePost/CreatePost';
+import UserEditForm from './UserEditForm/UserEditForm';
 import './User.css';
 import Post from '../Post/Post';
 
 function User({
-  loadUserData, loadUserPost, loadUserList, writePostToDb, sortPosts, addFollow, addLike, deleteData,
+  loadUserData, loadUserPost, loadUserList,
+  writePostToDb, sortPosts, addFollow, addLike,
+  deleteData, updateProfileDb, updateProfileImg,
 }) {
   const params = useParams();
   const data = useLocation();
@@ -83,7 +86,10 @@ function User({
         <UserIntro
           userIntroCardData={userDbData}
           editProfile={() => {
-            console.log('ToDo: Edit profile');
+            const form = document.querySelector('.edit-profile');
+            if (form) {
+              form.classList.remove('hidden');
+            }
           }}
           addUserToFollowed={(followData) => {
             addFollow(userData.userUUID, followData, 'following');
@@ -151,6 +157,11 @@ function User({
       {isUserExist()}
       {isUserLogged()}
       {isPostExist()}
+      <UserEditForm
+        updateProfile={(name, bio, tag, profilePic, bannerPic) => {
+          updateProfileDb(name, bio, tag, profilePic, bannerPic);
+        }}
+      />
     </div>
   );
 }

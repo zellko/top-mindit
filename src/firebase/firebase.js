@@ -5,6 +5,7 @@ import {
 import {
   getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged,
 } from 'firebase/auth';
+import * as storage from 'firebase/storage';
 import firebaseConfig from './firebaseConfig';
 
 // Initialize Firebase
@@ -13,6 +14,49 @@ const db = getDatabase();
 
 // Initialize provider for Google authentication
 const provider = new GoogleAuthProvider();
+
+// /** ********************
+// Firebase Cloud Storage
+// ********************** */
+
+// Initialize Cloud Storage and get a reference to the service
+const firebaseStorage = storage.getStorage(app);
+// Points to the root reference
+const storageRef = storage.ref(firebaseStorage);
+
+async function deletStorage(uuid, type) {
+  // Create a reference to the file to delete
+  const deleteRef = await storage.ref(storage.getStorage(), `${uuid}/${type}/`);
+  await storage.listAll(deleteRef).then(
+    (files) => {
+      files.items.forEach((fileRef) => storage.deleteObject(fileRef));
+    },
+  ).catch((error) => {
+    console.error('There was an error uploading a file to Cloud Storage:', error);
+    return 'error';
+  });
+  // Delete the file
+  console.log('files deleted');
+}
+
+async function saveImageToStorage(uuid, file, type) {
+  await deletStorage(uuid, type);
+
+  try {
+    // Upload the image to Cloud Storage.
+    const filePath = `${uuid}/${type}/${file.name}`;
+    const newImageRef = storage.ref(storage.getStorage(), filePath);
+    const fileSnapshot = await storage.uploadBytesResumable(newImageRef, file);
+
+    // Generate a public URL for the file.
+    const publicImageUrl = await storage.getDownloadURL(newImageRef);
+
+    return publicImageUrl;
+  } catch (error) {
+    console.error('There was an error uploading a file to Cloud Storage:', error);
+    return 'error';
+  }
+}
 
 // /** ********************
 // Firebase Realtime Database
@@ -189,12 +233,9 @@ const updateDb = (() => {
     // Get post ID / user uuid
     const { userUUID, userName } = data;
 
-    // Fetch data from DB
-    const dbData = await readDb('usersList', '');
-    dbData[userUUID] = userName;
     // Update Users list database
     const updates = {};
-    updates['/usersList'] = dbData;
+    updates[`/usersList/${userUUID}`] = userName;
 
     return update(ref(db), updates);
   };
@@ -320,4 +361,5 @@ function isUserLoggedIn() {
 
 export {
   readDb, writeDb, updateDb, signIn, signOutUser, isUserLoggedIn, deleteDbData,
+  saveImageToStorage,
 };

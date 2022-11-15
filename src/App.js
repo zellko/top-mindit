@@ -12,6 +12,7 @@ import Comments from './components/Comments/Comments';
 import './App.css';
 import {
   readDb, writeDb, updateDb, signIn, signOutUser, isUserLoggedIn, deleteDbData,
+  saveImageToStorage,
 } from './firebase/firebase';
 import { UserDataContext } from './UserDataContext';
 
@@ -327,6 +328,53 @@ function App() {
                     setDbUpdate(n + 1);
                   }
                 }
+                updateProfileDb={
+                  async (name, bio, tag, profilePic, bannerPic) => {
+                    const oldName = userData.name;
+                    userData.userName = name;
+                    userData.userBio = bio;
+                    userData.userTopic = tag;
+                    let profileImgUrl;
+                    let bannerImgUrl;
+                    const profileFileData = [...profilePic.files];
+                    const bannerFileData = [...bannerPic.files];
+
+                    if (profileFileData[0] !== undefined) {
+                      profileImgUrl = await saveImageToStorage(
+                        userData.userUUID,
+                        profileFileData[0],
+                        'profile',
+                      );
+                    }
+
+                    if (bannerFileData[0] !== undefined) {
+                      bannerImgUrl = await saveImageToStorage(
+                        userData.userUUID,
+                        bannerFileData[0],
+                        'banner',
+                      );
+                    }
+
+                    if (profileImgUrl !== undefined && profileImgUrl !== 'error') {
+                      userData.userprofilePicture = profileImgUrl;
+                    }
+
+                    if (bannerImgUrl !== undefined && bannerImgUrl !== 'error') {
+                      userData.userprofileBanner = bannerImgUrl;
+                    }
+
+                    writeDb.writeUser(userData);
+
+                    if (userData.userName !== oldName) {
+                      updateDb.updateUsersList(userData);
+                    }
+
+                    // Refresh state in order to "refresh" page so the new post created appear
+                    const n = dbUpdate;
+                    setDbUpdate(n + 1);
+                  }
+                }
+
               />
 )}
           />
