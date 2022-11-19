@@ -11,6 +11,7 @@ const undefinedUserdata = {
   userTopic: [],
   userUUID: '',
   userprofilePicture: defaultProfileImg,
+  userprofileBanner: '0',
 };
 
 function UserIntro({ userIntroCardData, editProfile, addUserToFollowed }) {
@@ -18,7 +19,7 @@ function UserIntro({ userIntroCardData, editProfile, addUserToFollowed }) {
   const { userData, userFollow } = getContext;
 
   const {
-    userName, userprofilePicture, userBio, userTopic, userUUID,
+    userName, userprofilePicture, userBio, userTopic, userUUID, userprofileBanner,
   } = userIntroCardData;
 
   let userDataChecked = userIntroCardData;
@@ -76,7 +77,10 @@ function UserIntro({ userIntroCardData, editProfile, addUserToFollowed }) {
 
   return (
     <div className="user-intro">
-      <div className="user-intro-banner" />
+      <div
+        className="user-intro-banner"
+        style={{ backgroundImage: `url(${userprofileBanner})` }}
+      />
       <div className="user-intro-header">
         <img src={`${userprofilePicture}?sz=150`} referrerPolicy="no-referrer" alt="User Profile" />
         <div className="user-intro-name">

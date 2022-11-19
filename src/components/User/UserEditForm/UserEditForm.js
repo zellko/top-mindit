@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { UserDataContext } from '../../../UserDataContext';
 import './UserEditForm.css';
+import imgAddIcon from '../../../img/image-plus.png';
 
 function UserEditForm({ updateProfile }) {
   const [postTopic, setPostTopic] = useState([]);
@@ -10,9 +11,30 @@ function UserEditForm({ updateProfile }) {
   useEffect(() => {
     const inputName = document.querySelector('.edit-profile #input-name');
     const inputBio = document.querySelector('.edit-profile textarea');
+    const inputBanner = document.querySelector('.edit-profile #input-banner');
+    const inputPic = document.querySelector('.edit-profile #input-pic');
+    const inputBannerSpan = document.querySelector('.edit-profile .input-banner-container span');
+    const inputPicSpan = document.querySelector('.edit-profile .input-pic-container span');
     inputName.value = userData.userName;
     inputBio.value = userData.userBio;
     setPostTopic(userData.userTopic);
+
+    inputBanner.addEventListener('change', (e) => {
+      const fileName = e.target.files[0].name;
+      // if (inputBannerSpan === null) return;
+      inputBannerSpan.textContent = fileName;
+    });
+
+    inputPic.addEventListener('change', (e) => {
+      const fileName = e.target.files[0].name;
+      inputPicSpan.textContent = fileName;
+    });
+
+    // componentWillUnmount
+    return () => {
+      inputBanner.removeEventListener('change', () => {});
+      inputPic.removeEventListener('change', () => {});
+    };
   }, []);
 
   function addTopic() {
@@ -47,12 +69,16 @@ function UserEditForm({ updateProfile }) {
     const inputTopic = document.querySelector('.edit-profile  #input-tag');
     const inputProfilePic = document.querySelector('.edit-profile  #input-pic');
     const inputBanner = document.querySelector('.edit-profile  #input-banner');
+    const inputBannerSpan = document.querySelector('.edit-profile .input-banner-container span');
+    const inputPicSpan = document.querySelector('.edit-profile .input-pic-container span');
 
     inputName.value = userData.userName;
     inputBio.value = userData.userBio;
     inputTopic.value = '';
     inputProfilePic.value = '';
     inputBanner.value = '';
+    inputBannerSpan.textContent = '';
+    inputPicSpan.textContent = '';
 
     setPostTopic(userData.userTopic);
 
@@ -102,18 +128,27 @@ function UserEditForm({ updateProfile }) {
           <button type="button" onClick={onSave}>Save</button>
           <button type="button" onClick={onCloseForm}>✕ Close</button>
         </div>
-        <label htmlFor="input-banner">
-          Banner:
-          {' '}
-          <span>max. 5mb</span>
-        </label>
-        <input type="file" id="input-banner" />
-        <label htmlFor="input-pic">
-          Profile picture:
-          {' '}
-          <span>max. 5mb</span>
-        </label>
-        <input type="file" id="input-pic" />
+        <div className="input-banner-container">
+          <div className="custom-input-banner">
+            <label htmlFor="input-banner">
+              <img src={imgAddIcon} alt="Add banner" />
+              Add Banner
+            </label>
+            <input type="file" id="input-banner" />
+          </div>
+          <span />
+        </div>
+        <div className="input-pic-container">
+          <div className="custom-input-pic">
+            <label htmlFor="input-pic">
+              <img src={imgAddIcon} alt="Add banner" />
+              Add Profile Picture
+            </label>
+            <input type="file" id="input-pic" />
+          </div>
+          <span />
+        </div>
+        <span>max. 5mb</span>
         <label htmlFor="input-name">New Name</label>
         <input type="text" id="input-name" />
         <label htmlFor="input-bio">Bio</label>
@@ -129,8 +164,8 @@ function UserEditForm({ updateProfile }) {
           <input id="input-tag" placeholder="Topic (Min 1 / Max 3)" />
           <button type="button" onClick={addTopic}>Add</button>
         </div>
+        <span className="form-error" />
       </form>
-      <span className="form-error" />
     </div>
   );
 }

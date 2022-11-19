@@ -10,7 +10,7 @@ import Post from '../Post/Post';
 function User({
   loadUserData, loadUserPost, loadUserList,
   writePostToDb, sortPosts, addFollow, addLike,
-  deleteData, updateProfileDb, updateProfileImg,
+  deleteData, updateProfileDb,
 }) {
   const params = useParams();
   const data = useLocation();

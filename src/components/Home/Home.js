@@ -219,14 +219,6 @@ function Home({
   return (
     <div className="home">
       {loadCards()}
-      <br />
-      HOME -
-      {' '}
-      {param}
-      <br />
-      userData:
-      {userData.userUUID}
-      <br />
     </div>
   );
 }

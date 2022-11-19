@@ -12,9 +12,8 @@ const undefinedUserdata = {
   userTopic: [],
   userUUID: '',
   userprofilePicture: defaultProfileImg,
+  userprofileBanner: '0',
 };
-
-const testBG = 'url("https://cdn.pixabay.com/photo/2015/10/29/14/38/web-1012467__340.jpg")';
 
 function UserCard({ userCardData, addUserToFollowed }) {
   const getContext = useContext(UserDataContext);
@@ -87,7 +86,7 @@ function UserCard({ userCardData, addUserToFollowed }) {
     <div className="user-card">
       <div
         className="user-card-banner"
-        style={{ backgroundImage: testBG }}
+        style={{ backgroundImage: `url(${userDataChecked.userprofileBanner})` }}
       >
         <img
           src={`${userDataChecked.userprofilePicture}?sz=150`}

@@ -92,3 +92,7 @@ span{
   background: 0;
   color: var(--color-red);
 }
+
+img{
+  aspect-ratio: 1;
+}

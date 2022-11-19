@@ -24,6 +24,8 @@
     min-height: 80px;
     background-color: var(--color-pink);
     background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center bottom;
     opacity: 0.8;
     z-index: 0;
     padding: 8px;

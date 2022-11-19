@@ -24,8 +24,11 @@
 }
 
 .user-intro-banner{
-    height: 80px;
+    height: 120px;
     background-color: var(--color-pink);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center bottom;
     opacity: 0.8;
     z-index: 0;
 }

@@ -1,6 +1,7 @@
 .edit-profile{
     position: fixed;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     width: 100%;
@@ -17,15 +18,19 @@
     border-radius: 4px;
     max-width: 560px;
     width: 90%;
-    height: 60%;
-    padding: 16px;
+    padding: 16px 16px 32px 16px;
     gap: 6px;
+}
+
+.edit-profile form span{
+    font-style: italic;
 }
 
 .edit-profile .form-control{
     display: flex;
     align-items: center;
-    padding: 4px;
+    padding: 4px 4px 16px 4px;
+    border-bottom: 1px solid var(--color-border);
 }
 
 .edit-profile .form-control :last-child{
@@ -36,12 +41,69 @@
     height: 34px;
 }
 
+.edit-profile .custom-input-banner,
+.edit-profile .custom-input-pic{
+    display: flex;
+    align-items: center;
+    height: 34px;
+    background-color: var(--color-card-bg-clear);
+    color: var(--color-grey);
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    padding:  0 16px;
+    width: max-content;
+}
+
+.edit-profile .custom-input-banner label,
+.edit-profile .custom-input-pic label{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.input-pic-container, .input-banner-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.edit-profile form .input-pic-container span, 
+.edit-profile form .input-banner-container span{
+    color: var(--color-grey);
+    padding: 0;
+    margin: 0;
+}
+
+.edit-profile form span{
+    font-size: 0.8rem;
+    padding-left: 32px;
+}
+
+.edit-profile img {
+    width: 24px;
+}
+
+.edit-profile .custom-input-banner > *:hover,
+.edit-profile .custom-input-pic > *:hover {
+    cursor: pointer;
+    opacity: 0.7;
+}
+
+
+.edit-profile input[type="file"] {
+    display: none;
+}
+
 .edit-profile input, .edit-profile  textarea{
     background-color: var(--color-card-bg-clear);
     color: var(--color-grey);
     border: 1px solid var(--color-border);
     border-radius: 4px;
     padding:  0 16px;
+}
+
+.form-error{
+    padding-top: 16px;
 }
 
 .hidden{
