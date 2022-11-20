@@ -5,16 +5,17 @@ import React, {
 import {
   Routes, Route, useNavigate, useLocation,
 } from 'react-router-dom';
-import Header from './components/Header/Header';
-import Home from './components/Home/Home';
-import User from './components/User/User';
-import Comments from './components/Comments/Comments';
-import './App.css';
 import {
   readDb, writeDb, updateDb, signIn, signOutUser, isUserLoggedIn, deleteDbData,
   saveImageToStorage,
 } from './firebase/firebase';
+import Header from './components/Header/Header';
+import Home from './components/Home/Home';
+import User from './components/User/User';
+import Comments from './components/Comments/Comments';
+import Footer from './components/Footer/Footer';
 import { UserDataContext } from './UserDataContext';
+import './App.css';
 
 const sortPosts = (() => {
   const newest = (postsList) => {
@@ -64,32 +65,6 @@ function App() {
   const location = useLocation();
   const [dbUpdate, setDbUpdate] = useState(0);
 
-  /*
-  async function isUserInDb(data, uuid) {
-    const formattedData = formatFirebaseUserData(data);
-
-    const userDbData = await readDb('users', uuid);
-
-    if (typeof (userDbData) === 'object') {
-      // If readDB return an object, user is found in database...
-      console.log('yes user is in DB');
-      setUserData(userDbData); // Set userData state with DB data
-
-      return;
-    }
-
-    // Else, if user is not in DB...
-    writeDb.writeUser(formattedData); // ... Add user to DB
-    updateDb.updateUsersList(formattedData);
-
-    setUserData(formattedData); // Set userData state with formatted Data
-
-    // ... At first login, user are redirected to their user page (to modify their profile)
-    navigate(`/user/${formattedData.userName}`, { state: { ...formattedData } });
-
-    // TBD: Check in case of error ?
-  } */
-
   async function onLogIn() {
     // const userAuthData = await signIn();
     let userAuthData;
@@ -103,12 +78,9 @@ function App() {
     // If user is sign In without error
     if (userAuthData.uid) {
       // Check if user is in database
-      // await isUserInDb(userAuthData, userAuthData.uid);
-
       const userDbData = await readDb('users', userAuthData.uid);
       if (typeof (userDbData) === 'object') {
         // If readDB return an object, user is found in database...
-        console.log('yes user is in DB');
         setUserData(userDbData); // Set userData state with DB data
       } else {
         const formattedData = formatFirebaseUserData(userAuthData);
@@ -162,14 +134,12 @@ function App() {
 
       if (userAuthData) {
         // If user is already logged...
-        console.log('user is logged in!');
 
         // ... check if user is in database
         // await isUserInDb(userAuthData, userAuthData.uid);
         const userDbData = await readDb('users', userAuthData.uid);
         if (typeof (userDbData) === 'object') {
           // If readDB return an object, user is found in database...
-          console.log('yes user is in DB');
           setUserData(userDbData); // Set userData state with DB data
         } else {
           const formattedData = formatFirebaseUserData(userAuthData);
@@ -422,6 +392,7 @@ function App() {
 )}
           />
         </Routes>
+        <Footer />
       </div>
     </UserDataContext.Provider>
   );

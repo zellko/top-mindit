@@ -1,0 +1,26 @@
+.footer{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 0;
+    margin-top: 16px;
+    background-color: var(--color-card-header);
+    border-top: 1px solid var(--color-border);
+    font-size: 0.9rem;
+}
+
+.footer a{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.footer p{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.footer a img{
+    height: 20px;
+}

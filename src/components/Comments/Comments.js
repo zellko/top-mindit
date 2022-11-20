@@ -285,12 +285,6 @@ function Comments({
           }
         })}
       </div>
-      Comments.js
-      <br />
-      <br />
-      postID:
-      {' '}
-      {params.postid}
     </div>
   );
 }
