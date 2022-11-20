@@ -21,7 +21,6 @@ function UserEditForm({ updateProfile }) {
 
     inputBanner.addEventListener('change', (e) => {
       const fileName = e.target.files[0].name;
-      // if (inputBannerSpan === null) return;
       inputBannerSpan.textContent = fileName;
     });
 
@@ -35,7 +34,7 @@ function UserEditForm({ updateProfile }) {
       inputBanner.removeEventListener('change', () => {});
       inputPic.removeEventListener('change', () => {});
     };
-  }, []);
+  }, [userData]);
 
   function addTopic() {
     const inputTopic = document.querySelector('.edit-profile #input-tag');
@@ -121,6 +120,17 @@ function UserEditForm({ updateProfile }) {
     onCloseForm();
   }
 
+  function renderPostTopic() {
+    if (postTopic !== undefined) {
+      return (
+        postTopic.map((topic) => (
+          <button type="button" onClick={removeTopic} key={`${topic}-${Math.random()}`}>
+            {topic}
+          </button>
+        ))
+      );
+    }
+  }
   return (
     <div className="edit-profile hidden">
       <form>
@@ -154,13 +164,7 @@ function UserEditForm({ updateProfile }) {
         <label htmlFor="input-bio">Bio</label>
         <textarea id="input-bio" rows="5" />
         <div className="tag-container">
-          {
-              postTopic.map((topic) => (
-                <button type="button" onClick={removeTopic} key={`${topic}-${Math.random()}`}>
-                  {topic}
-                </button>
-              ))
-          }
+          {renderPostTopic()}
           <input id="input-tag" placeholder="Topic (Min 1 / Max 3)" />
           <button type="button" onClick={addTopic}>Add</button>
         </div>
