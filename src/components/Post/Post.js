@@ -61,7 +61,8 @@ function Post({
   }
 
   function handleShare() {
-    console.log('handleShare');
+    // Copy comment link to user clipboard
+    navigator.clipboard.writeText(`http://localhost:3000/comments/${postData.postId}`);
   }
 
   function handleLikeClick() {
@@ -156,7 +157,7 @@ function Post({
               <p>{countReply()}</p>
             </div>
             <div className="social-share">
-              <button type="button">
+              <button type="button" onClick={handleShare}>
                 <img src={imgShare} alt="Share post link" />
               </button>
             </div>
