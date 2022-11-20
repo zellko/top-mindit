@@ -35,6 +35,11 @@
 
 .edit-profile .form-control :last-child{
     margin-left: auto;
+    border: 0;
+}
+
+.edit-profile .form-control :last-child:hover{
+    color: var(--color-red);
 }
 
 .edit-profile input{
@@ -100,6 +105,23 @@
     border: 1px solid var(--color-border);
     border-radius: 4px;
     padding:  0 16px;
+}
+
+.edit-profile .tag-input{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.edit-profile .tag-input button{
+    background-color: var(--color-green);
+    color: var(--color-dark);
+    border-color: var(--color-dark);
+}
+
+.edit-profile .tag-input button:hover{
+    background-color: var(--color-green);
+    opacity: 0.9;
 }
 
 .form-error{

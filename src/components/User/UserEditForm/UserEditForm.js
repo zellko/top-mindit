@@ -136,7 +136,7 @@ function UserEditForm({ updateProfile }) {
       <form>
         <div className="form-control">
           <button type="button" onClick={onSave}>Save</button>
-          <button type="button" onClick={onCloseForm}>✕ Close</button>
+          <button type="button" onClick={onCloseForm}>✕</button>
         </div>
         <div className="input-banner-container">
           <div className="custom-input-banner">
@@ -163,10 +163,12 @@ function UserEditForm({ updateProfile }) {
         <input type="text" id="input-name" />
         <label htmlFor="input-bio">Bio</label>
         <textarea id="input-bio" rows="5" />
-        <div className="tag-container">
-          {renderPostTopic()}
+        <div className="tag-input">
           <input id="input-tag" placeholder="Topic (Min 1 / Max 3)" />
           <button type="button" onClick={addTopic}>Add</button>
+        </div>
+        <div className="tag-container">
+          {renderPostTopic()}
         </div>
         <span className="form-error" />
       </form>
