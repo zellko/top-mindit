@@ -1,17 +1,25 @@
 # top-MindIt
 The Odin Project - JavaScript - Project: JavaScript Final Project 
 
-🌐 Live version: https://mindit.web.app/
-📁 Documentation: https://... 
+🌐 Live version: https://mindit-c6a56.web.app/
 
 ## Description:
 
-Lorem Ipsum
+This project was made as part of The Odin Project, full stack javascript Curriculum! 
+
+This is the final project of the JavaScript section. The goal was to replicate one well know website. 
+
+I choose to replicated a kind of mix between Twitter and Reddit. Yeah, may not have been a clever idea. 
+
+I posted, directly on the website, a kind of summary of this project journey. [If you want to check it!](https://mindit-c6a56.web.app/user/Zellkoss)
+
+Check out: [The Odin Project](https://www.theodinproject.com/)if you want to learn WebDev.
 
 ### Resources:
 
 Images:
-- /
+- Banner: https://coursework.vschool.io/javascript-code-conventions/
+- Logo: https://www.pngwing.com/en/free-png-npeye
 
 Icons:
 - https://materialdesignicons.com/
