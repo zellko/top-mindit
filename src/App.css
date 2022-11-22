@@ -100,3 +100,12 @@ span{
 img{
   aspect-ratio: 1;
 }
+
+.no-data{
+  display: flex; 
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  font-style: italic;
+}

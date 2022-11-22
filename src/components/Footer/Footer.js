@@ -6,9 +6,10 @@ function Footer() {
   return (
     <div className="footer">
       <p>
-        ©2021 Zellkoss
-        {' '}
+        ©
         {new Date().getFullYear()}
+        {' '}
+        Zellkoss
         <a href="https://github.com/zellko/top-mindit">
           <img src={githubIcon} alt="Github link" />
         </a>

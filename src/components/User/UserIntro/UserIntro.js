@@ -90,7 +90,6 @@ function UserIntro({ userIntroCardData, editProfile, addUserToFollowed }) {
             </h1>
             {renderButton()}
           </div>
-          <p>Karma: </p>
         </div>
 
       </div>

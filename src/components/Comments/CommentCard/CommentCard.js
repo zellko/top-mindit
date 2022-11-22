@@ -70,7 +70,16 @@ function CommentCard({
 
         <div className="comment-content-social">
           <div className="social-like">
-            <button type="button" onClick={() => { addLikeToDb(); }}>
+            <button
+              type="button"
+              onClick={() => {
+                if (!userData.userUUID) {
+                  console.log('User is not logged, ignore like');
+                  return;
+                }
+                addLikeToDb();
+              }}
+            >
               <svg
                 alt="Like post"
                 viewBox="0 0 24 24"
